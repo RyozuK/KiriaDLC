@@ -1,0 +1,102 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Edit this!-->
+    <ModName>Mod_KiriaDLC</ModName>
+
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>$(ModName)</AssemblyName>
+    <Description>My first plugin</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>$(ModName)</RootNamespace>
+    <OutputType>Library</OutputType>
+    <!-- Base paths -->
+    <!-- You should modify the Directory.Build.props.template -> Directory.Build.props and put a custom path there if needed. -->
+    <GamePath Condition="'$(GamePath)' == '' AND '$(OS)' == 'Windows_NT'">F:\Steam\steamapps\common\Elin</GamePath>
+    <GamePath Condition="'$(GamePath)' == '' AND '$(OS)' != 'Windows_NT'">/home/$(USERNAME)/.steam/steam/steamapps/common/Elin</GamePath>
+    
+    <!-- derived paths -->
+    <ManagedPath>$(GamePath)/Elin_Data/Managed</ManagedPath>
+    <BepInExPath>$(GamePath)/BepInEx</BepInExPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(ManagedPath)/Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Elin">
+      <HintPath>$(ManagedPath)/Elin.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Core">
+      <HintPath>$(BepInExPath)/core/BepInEx.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Unity">
+      <HintPath>$(BepInExPath)/core/BepInEx.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Harmony">
+      <HintPath>$(BepInExPath)/core/0Harmony.dll</HintPath>
+    </Reference>
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.34" IncludeAssets="compile" />
+    <Reference Include="Plugins.UI">
+      <HintPath>$(ManagedPath)/Plugins.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugins.BaseCore">
+      <HintPath>$(ManagedPath)/Plugins.BaseCore.dll</HintPath>
+    </Reference>
+    <!-- Add the NPOI package reference -->
+<!--    <PackageReference Include="NPOI" Version="1.2.3.0" Culture="neutral" PublicKeyToken="null" />-->
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\HPD\Debug\netstandard2.0\Plugins.BaseCore.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resting\" />
+  </ItemGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <PropertyGroup>
+      <ModFolder>$(GamePath)/Package/$(ModName)</ModFolder>
+    </PropertyGroup>
+    
+    <!-- Create the mod directory if it doesn't exist -->
+    <MakeDir Directories="$(ModFolder)" />
+    
+    <!-- Copy the compiled DLL to the mod folder -->
+    <Copy 
+      SourceFiles="$(TargetPath)"
+      DestinationFolder="$(ModFolder)"
+      SkipUnchangedFiles="true"
+    />
+
+    <!-- Copy the contents of the resources folder recursively -->
+    <ItemGroup>
+      <ResourceFiles Include=".\resources\**\*.*" />
+    </ItemGroup>
+    
+    <Copy
+            SourceFiles="@(ResourceFiles)"
+            DestinationFolder="$(ModFolder)\%(RecursiveDir)"
+            SkipUnchangedFiles="true"
+            OverwriteReadOnlyFiles="true"
+            Retries="3"
+            RetryDelayMilliseconds="300"
+    />
+    
+    <!-- Optional: You can add a message to confirm the copy -->
+    <Message Text="Copied $(TargetFileName) to $(ModFolder)" Importance="high" />
+  </Target>
+
+
+</Project>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Meta>
+    <title>Kiria DLC</title>
+    <id>kiria_dlc</id>
+    <author>Ryozu</author>
+    <loadPriority>100</loadPriority>
+    <description>
+        Are you friends with Kiria? She'd like your help with something.
+
+        君は、キリアと友達ですか？彼女はあなたの手伝いを希望しています。
+    </description>
+    <version>0.23.25</version>
+</Meta>
