@@ -4,24 +4,16 @@ using UnityEngine;
 
 namespace Mod_KiriaDLC;
 
-public class QuestKiria : Quest
+//Extending QuestDialog is suitable for *most* quests that involve Drama book
+public class QuestKiria : QuestDialog
 {
     public override bool RequireClientInSameZone => false;
-    
-    public override void OnClickQuest()
-    {
-        Console.WriteLine("KIRIADLC::OnClickQuest::START");
-        //this.DropReward("map_kiria");
-        //this.DropReward("chicken_dagger");
-        Thing mapItem = ThingGen.Create("map_kiria");
-        Console.WriteLine(mapItem.ToString());
-        this.DropReward(mapItem);
-        this.chara.ShowDialog("kiriaDLC", "main", "");
-    }
 
     public override void OnStart()
     {
-        base.OnStart();
-        
+        Debug.LogWarning("KiriaDLC:: OnStart called, spawning map");
+        Thing mapItem = ThingGen.Create("map_kiria");
+        Msg.Say("get_quest_item");
+        EClass.pc.Pick(mapItem);
     }
 }
