@@ -22,17 +22,25 @@ public class Plugin : BaseUnityPlugin
     }
 }
 
+// TODO
+// Add the books/notes
+// Make the map
+// Translate it all
+// Add consequences? (IE give choice to implant gene into Kiria or have her get upset)
+// Make the last floor locked/Boss guarded like Void?
 
-[HarmonyPatch(typeof(Game))]
-[HarmonyPatch(nameof(Game.StartNewGame))]
-class StartPatch : EClass
-{
-    static void Postfix(Game __instance)
-    {
-        CharaGen.Create("adv_kiria").SetGlobal(EClass.game.StartZone, EClass.game.Prologue.posFiama.x,
-            EClass.game.Prologue.posAsh.y);
-    }
-}
+
+
+// [HarmonyPatch(typeof(Game))]
+// [HarmonyPatch(nameof(Game.StartNewGame))]
+// class StartPatch : EClass
+// {
+//     static void Postfix(Game __instance)
+//     {
+//         CharaGen.Create("adv_kiria").SetGlobal(EClass.game.StartZone, EClass.game.Prologue.posFiama.x,
+//             EClass.game.Prologue.posAsh.y);
+//     }
+// }
 
 
 [HarmonyPatch(typeof(Zone))]
@@ -45,15 +53,15 @@ class ZonePatch : EClass {
         Debug.LogWarning("\t" + __instance.pathExport);
     }
     static void Postfix(Zone __instance) {
+        Debug.LogWarning("Now entering " + __instance.source.id);
         //If they've already gotten the quest, or the quest is finished, we don't want to add it again
         //This is a one and done quest
-        Debug.LogWarning("Now entering " + __instance.source.id);
         if (!EClass.game.quests.IsCompleted("kiria_map_quest") && !EClass.game.quests.IsStarted<QuestKiria>())
         {
             //Quest must have a client, we find Kiria to be the client
             Chara c = EClass.game.cards.globalCharas.Find("adv_kiria");
             //If Kiria is recruited and has enough affinity, add the quest 
-            if (c != null) //c.IsPCFaction && c.affinity.value >= 85) //Pre marriage, post recruit
+            if (c != null) // && c.IsPCFaction && c.affinity.value >= 85) //Pre marriage, post recruit
             {
                 //Putting it on the global quest list and setting the client will make the quest
                 //Appear on the quest board
@@ -101,78 +109,96 @@ class DigPatch : TaskDig
     }
 }
 
-
-//This dig into the quest system here
-
-[HarmonyPatch(typeof(Quest))]
-[HarmonyPatch(nameof(Quest.OnClickQuest))]
-class QuestPatch : Quest
+[HarmonyPatch(typeof(TraitBook))]
+[HarmonyPatch(nameof(TraitBook.OnRead))]
+class BookReadPatch : TraitBook
 {
-    public static void Prefix(Quest __instance)
+    static void Prefix(TraitBook __instance)
     {
-        Debug.LogWarning("QUEST::Information::Quest.id is [" + __instance.id + "]");
-        Debug.LogWarning("QUEST::Information::Quest.drama is [" + String.Join(", ", __instance.source.drama) + "]");
+        BookList.Item item = __instance.Item;
+        Debug.LogWarning("KiriaDLC::TaitBook::OnRead");
+        Debug.LogWarning("\t" + (__instance.IsParchment ? "LayerParchment" : "LayerBook"));
+        Debug.LogWarning("\t" + (__instance.IsParchment ? "Scroll/" : "Book/") + item.id);
     }
 }
 
-//No really, who's talking?
 
-[HarmonyPatch(typeof(LayerDrama))]
-[HarmonyPatch(nameof(LayerDrama.Activate))]
-class LayerDramaPatch : LayerDrama
-{
-    static void Prefix(string book, string idSheet, string idStep,
-        Chara target = null, Card ref1 = null, string tag = "")
-    {
-        Debug.LogWarning("LayerDrama::Activate: Book    : " + book);
-        Debug.LogWarning("LayerDrama::Activate: idSheet : " + idSheet);
-        Debug.LogWarning("LayerDrama::Activate: idStep  : " + idStep);
-        Debug.LogWarning("LayerDrama::Activate: target  : " + target);
-        
-    }
-}
+/* ******************************
+ * The following is all purely for testing/debugging.  leaving it in for posterity
+ ********************************/
 
-[HarmonyPatch(typeof(DramaManager))]
-[HarmonyPatch(nameof(DramaManager.ParseLine))]
-class DramaManagerPatch : DramaManager
-{
-    static void Prefix(Dictionary<string, string> item)
-    {
-        bool notEmpty = false;
-        string output = "ParseLIne: ";
-        foreach (var i in item)
-        {
-            if (!i.Value.Equals(""))
-            {
-                notEmpty = true;
-                output += "\n\t\tKey: " + i.Key + " | Value: " + i.Value;
-            }
-        }
-
-        if (notEmpty)
-        {
-            Debug.LogWarning(output);
-        }
-    }
-}
-
-[HarmonyPatch(typeof(Map))]
-[HarmonyPatch(nameof(Map.TryLoadFile))]
-class MapTryPatch : Map
-{
-    static void Prefix(string path, string s, int size)
-    {
-        Debug.LogWarning("MapPatch::TryLoadFile called with: path/s/size=[" + path + "][" + s + "][" + size + "]");
-    }
-}
-
-[HarmonyPatch(typeof(Map))]
-[HarmonyPatch(nameof(Map.Load))]
-class MapLoadPatch : Map
-{
-    static void Prefix(string path, bool import = false, PartialMap partial = null)
-    {
-        Debug.LogWarning("MapPatch::Load called with: path/import/partial=[" + path + "][" + import + "][" + partial + "]");
-    }
-}
-
+//
+// //This dig into the quest system here
+//
+// [HarmonyPatch(typeof(Quest))]
+// [HarmonyPatch(nameof(Quest.OnClickQuest))]
+// class QuestPatch : Quest
+// {
+//     public static void Prefix(Quest __instance)
+//     {
+//         Debug.LogWarning("QUEST::Information::Quest.id is [" + __instance.id + "]");
+//         Debug.LogWarning("QUEST::Information::Quest.drama is [" + String.Join(", ", __instance.source.drama) + "]");
+//     }
+// }
+//
+// //No really, who's talking?
+//
+// [HarmonyPatch(typeof(LayerDrama))]
+// [HarmonyPatch(nameof(LayerDrama.Activate))]
+// class LayerDramaPatch : LayerDrama
+// {
+//     static void Prefix(string book, string idSheet, string idStep,
+//         Chara target = null, Card ref1 = null, string tag = "")
+//     {
+//         Debug.LogWarning("LayerDrama::Activate: Book    : " + book);
+//         Debug.LogWarning("LayerDrama::Activate: idSheet : " + idSheet);
+//         Debug.LogWarning("LayerDrama::Activate: idStep  : " + idStep);
+//         Debug.LogWarning("LayerDrama::Activate: target  : " + target);
+//         
+//     }
+// }
+//
+// [HarmonyPatch(typeof(DramaManager))]
+// [HarmonyPatch(nameof(DramaManager.ParseLine))]
+// class DramaManagerPatch : DramaManager
+// {
+//     static void Prefix(Dictionary<string, string> item)
+//     {
+//         bool notEmpty = false;
+//         string output = "ParseLIne: ";
+//         foreach (var i in item)
+//         {
+//             if (!i.Value.Equals(""))
+//             {
+//                 notEmpty = true;
+//                 output += "\n\t\tKey: " + i.Key + " | Value: " + i.Value;
+//             }
+//         }
+//
+//         if (notEmpty)
+//         {
+//             Debug.LogWarning(output);
+//         }
+//     }
+// }
+//
+// [HarmonyPatch(typeof(Map))]
+// [HarmonyPatch(nameof(Map.TryLoadFile))]
+// class MapTryPatch : Map
+// {
+//     static void Prefix(string path, string s, int size)
+//     {
+//         Debug.LogWarning("MapPatch::TryLoadFile called with: path/s/size=[" + path + "][" + s + "][" + size + "]");
+//     }
+// }
+//
+// [HarmonyPatch(typeof(Map))]
+// [HarmonyPatch(nameof(Map.Load))]
+// class MapLoadPatch : Map
+// {
+//     static void Prefix(string path, bool import = false, PartialMap partial = null)
+//     {
+//         Debug.LogWarning("MapPatch::Load called with: path/import/partial=[" + path + "][" + import + "][" + partial + "]");
+//     }
+// }
+//

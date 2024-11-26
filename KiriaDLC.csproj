@@ -60,10 +60,6 @@
   <ItemGroup>
     <Content Include="bin\HPD\Debug\netstandard2.0\Plugins.BaseCore.dll" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resting\" />
-  </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <PropertyGroup>

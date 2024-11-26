@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 public class TraitKiriaMap : TraitScrollMapTreasure
 {
-    //This is here only because of CSharp binding shenanigans. Without it, we don't run our custom GetDest
+    //This is here because of CSharp binding shenanigans, and since it's a quest item, as funny as it would be
+    //for it to spawn cursed and ruin the quest, let's not.
     public override bool OnUse(Chara c)
     {
         if (this.owner.refVal == 0)
@@ -20,21 +21,14 @@ public class TraitKiriaMap : TraitScrollMapTreasure
             Msg.Say("nothingHappens");
             return false;
         }
-        Rand.SetSeed(this.owner.refVal);
-        if (this.owner.blessedState <= BlessedState.Cursed && EClass.rnd(2) == 0)
-        {
-            Msg.Say("mapCrumble", this.owner);
-            this.owner.Destroy();
-            return false;
-        }
-        Rand.SetSeed();
+
         EClass.ui.layerFloat.ToggleLayer<LayerTreasureMap>()?.SetMap(this);
         return false;
     }
     
+     
     public new Point GetDest(bool fix = false)
     {
-        Debug.LogWarning("KiriaDLC:: Map Trait GetDest is being used here");
         Point point = new Point();
         int num = this.owner.GetInt(104);
         if (num == 0)
@@ -44,6 +38,7 @@ public class TraitKiriaMap : TraitScrollMapTreasure
             {
                 point.x = EClass.scene.elomap.minX + EClass.rnd(200);
                 point.z = EClass.scene.elomap.minY + EClass.rnd(200);
+                //Changed this so that we validate for nefia spawning instead of treasure spawning
                 if (EClass.scene.elomap.CanBuildSite(point.x, point.z, 1, ElomapSiteType.Nefia))
                 {
                     Rand.SetSeed();
@@ -65,17 +60,18 @@ public class TraitKiriaMap : TraitScrollMapTreasure
         return dest;
     }
 
+    //This spawns the nefia, it's called by the Prefix patch for digging
     public void SpawnNefia()
     {
-        //This spawns the nefia
-        Debug.LogWarning("KiriaDLC:: Here is where I would spawn my Nefia, if I had any");
-        //This works!  Now to actually SPAWN the nefia.
+        Debug.Log("KiriaDLC:: Here is where I would spawn my Nefia");
+        //We create the site this way because the CreateSite with given position is private
+        //Radius 1 basically means within 1 tile of the PC's current location
         Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon");
         if (site != null)
         {
             site.isKnown = true;
             Msg.Say("discoverZone", site.NameWithDangerLevel);
-            Debug.LogWarning("Map created " + site.NameWithDangerLevel);
+            Debug.Log("Map created " + site.NameWithDangerLevel);
         }
         else
         {

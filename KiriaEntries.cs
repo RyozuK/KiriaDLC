@@ -15,16 +15,33 @@ public class KiriaEntries
     {
         var sources = Core.Instance.sources;
         AddThings(sources);
-        AddQuest(sources);
         AddZones(sources);
+        AddQuest(sources);
     }
 
     private static void AddZones(SourceManager sources)
     {
         SourceZone.Row zone_nymelle = sources.zones.rows.Find(x => x.id == "nymelle");
         sources.zones.rows.Add(MakeKiriaZoneDungeon(zone_nymelle));
+        SourceZone.Row zone_nymell_boss = sources.zones.rows.Find(x => x.id == "nymelle_boss");
+        sources.zones.rows.Add(MakeKiriaBoss(zone_nymell_boss));
         SourceZone.Row zone_nymelle_crystal = sources.zones.rows.Find(x => x.id == "nymelle_crystal");
         sources.zones.rows.Add(MakeKiriaZoneLab(zone_nymelle_crystal));
+
+    }
+
+    private static SourceZone.Row MakeKiriaBoss(SourceZone.Row zoneNymellBoss)
+    {
+        var zone_kiria_boss = CreateCopy(zoneNymellBoss);
+        zone_kiria_boss.id = "kiria_boss";
+        zone_kiria_boss.name = "Strange factory";
+        zone_kiria_boss.name_JP = "..."; //TODO
+        zone_kiria_boss.type = "Mod_KiriaDLC.Zone_KiriaDungeon";
+        zone_kiria_boss.LV = 36;
+        zone_kiria_boss.textFlavor = "You hear ominous beeping noises...";
+        zone_kiria_boss.textFlavor_JP = "..."; //TODO
+
+        return zone_kiria_boss;
 
     }
 
@@ -63,6 +80,19 @@ public class KiriaEntries
         //Using Kuronekotei's example, we find an existing item to duplicate
         SourceThing.Row treasure_map = sources.things.rows.Find(x => x.id == "map_treasure");
         sources.things.rows.Add(MakeKiriaMap(treasure_map));
+        
+        SourceThing.Row tool_build = sources.things.rows.Find(x => x.id == "tool_build");
+        sources.things.rows.Add(MakeBookTool(tool_build));
+    }
+
+    private static SourceThing.Row MakeBookTool(SourceThing.Row toolBuild)
+    {
+        var book_tool = CreateCopy(toolBuild);
+        book_tool.id = "kiriaTool";
+        book_tool.name = "Kiria Item Tool";
+        book_tool.name_JP = "Kiria Item Tool";
+        book_tool.trait = new string[] {"KiriaItemTool"};
+        return book_tool;
     }
 
     private static SourceThing.Row MakeKiriaMap(SourceThing.Row treasureMap)
