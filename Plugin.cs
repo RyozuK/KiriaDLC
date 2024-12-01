@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 
 namespace Mod_KiriaDLC;
+
+
 
 [BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.0.0.0")]
 public class Plugin : BaseUnityPlugin
@@ -55,13 +58,19 @@ class ZonePatch : EClass {
     static void Postfix(Zone __instance) {
         Debug.LogWarning("Now entering " + __instance.source.id);
         //If they've already gotten the quest, or the quest is finished, we don't want to add it again
+        //Also make sure it's the PC's zone and that it's not already in the list to avoid duplication
+        //and issues with moongates.
         //This is a one and done quest
-        if (!EClass.game.quests.IsCompleted("kiria_map_quest") && !EClass.game.quests.IsStarted<QuestKiria>())
+        if (!EClass.game.quests.IsCompleted("kiria_map_quest") 
+            && !EClass.game.quests.IsStarted<QuestKiria>()
+            && EClass._zone.IsPCFaction
+            && EClass.game.quests.globalList.All(x => x.id != "kiria_map_quest")
+            )
         {
             //Quest must have a client, we find Kiria to be the client
             Chara c = EClass.game.cards.globalCharas.Find("adv_kiria");
             //If Kiria is recruited and has enough affinity, add the quest 
-            if (c != null) // && c.IsPCFaction && c.affinity.value >= 85) //Pre marriage, post recruit
+            if (c != null && c.IsPCFaction && c.affinity.value >= 85) //Pre marriage, post recruit
             {
                 //Putting it on the global quest list and setting the client will make the quest
                 //Appear on the quest board
@@ -109,24 +118,23 @@ class DigPatch : TaskDig
     }
 }
 
-[HarmonyPatch(typeof(TraitBook))]
-[HarmonyPatch(nameof(TraitBook.OnRead))]
-class BookReadPatch : TraitBook
-{
-    static void Prefix(TraitBook __instance)
-    {
-        BookList.Item item = __instance.Item;
-        Debug.LogWarning("KiriaDLC::TaitBook::OnRead");
-        Debug.LogWarning("\t" + (__instance.IsParchment ? "LayerParchment" : "LayerBook"));
-        Debug.LogWarning("\t" + (__instance.IsParchment ? "Scroll/" : "Book/") + item.id);
-    }
-}
-
-
 /* ******************************
  * The following is all purely for testing/debugging.  leaving it in for posterity
  ********************************/
 
+
+// [HarmonyPatch(typeof(TraitBook))]
+// [HarmonyPatch(nameof(TraitBook.OnRead))]
+// class BookReadPatch : TraitBook
+// {
+//     static void Prefix(TraitBook __instance)
+//     {
+//         BookList.Item item = __instance.Item;
+//         Debug.LogWarning("KiriaDLC::TaitBook::OnRead");
+//         Debug.LogWarning("\t" + (__instance.IsParchment ? "LayerParchment" : "LayerBook"));
+//         Debug.LogWarning("\t" + (__instance.IsParchment ? "Scroll/" : "Book/") + item.id);
+//     }
+// }
 //
 // //This dig into the quest system here
 //

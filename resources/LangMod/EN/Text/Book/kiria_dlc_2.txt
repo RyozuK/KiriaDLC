@@ -1,5 +1,0 @@
-Research notes 42,,0
-{center}
-Test Book
-{p}
-Page 2

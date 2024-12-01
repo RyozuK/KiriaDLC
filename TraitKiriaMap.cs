@@ -69,6 +69,9 @@ public class TraitKiriaMap : TraitScrollMapTreasure
         Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon");
         if (site != null)
         {
+
+            
+            
             site.isKnown = true;
             Msg.Say("discoverZone", site.NameWithDangerLevel);
             Debug.Log("Map created " + site.NameWithDangerLevel);
