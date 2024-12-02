@@ -1,3 +1,5 @@
 Research notes 69,Strange Engineer 「Ryozu」,0
 {center}
-It's clear now, her body won't last very long.  She can now create soulless clones of herself, and I've made a way to move her mind from one body to another, but she risks losing memories each time.  The transfer is incomplete.  I've disabled the transfer to avoid more memory corruption.  I need to find a way <the letter is torn in half here>
+It's clear now, her body won't last very long.  She can now create soulless clones of herself, and I've made a way to move her mind from one body to another, but she risks losing memories each time.  The transfer is incomplete.  I've disabled the transfer to avoid more memory corruption.  I need to find a way 
+---------
+<the letter is torn in half here>

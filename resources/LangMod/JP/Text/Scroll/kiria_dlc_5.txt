@@ -1,3 +1,7 @@
-Research notes 128,Strange Engineer 「Ryozu」,0
-{center}
-I've transfered Kiria to yet another new body.  Her old body was broken beyond repair and I couldn't stand to see her in that state. Unfortunately, her memories have become even more corrupt.  She sometimes looks at me as if I'm a stranger now.
+研究メモ 128,奇妙な技師「リョウズ」,0  
+{center}  
+キリアをまた新しい体に移しました。  
+以前の体は修復不可能なほど壊れており、  
+その状態の彼女を見るのが耐えられませんでした。  
+しかし残念なことに、彼女の記憶はさらに壊れてしまいました。  
+時々、彼女は私をまるで見知らぬ人のように見つめます。

@@ -1,3 +1,6 @@
-Research notes 42,Strange Engineer 「Ryozu」,0
-{center}
-She's alive!  My creation has a will of her own, a life of her own now.  I sense the spark of life within her.  I shall call her...
+研究メモ 42,奇妙な技師「リョウズ」,0  
+{center}  
+彼女が生きている！  
+私の創造物は自らの意志を持ち、今や自らの命を持つ存在となった。  
+彼女の中に生命の輝きを感じる。  
+彼女の名は…と呼

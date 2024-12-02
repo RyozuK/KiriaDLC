@@ -10,8 +10,18 @@ namespace Mod_KiriaDLC;
 
 
 [BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.0.0.0")]
-public class Plugin : BaseUnityPlugin
+public class KiriaDLCPlugin : BaseUnityPlugin
 {
+    public static readonly bool DEBUG_MODE = false;
+    public static readonly int NUM_FLOORS = DEBUG_MODE ? 3 : 6;
+    
+    public static void LogWarning(String loc, String msg)
+    {
+        if (DEBUG_MODE)
+        {
+            Debug.LogWarning("KiriaDLC::"+loc+":: " + msg);
+        }
+    }
     private void Start()
     {
         Debug.Log("KIRIADLC: Mod Start()");
@@ -51,12 +61,12 @@ public class Plugin : BaseUnityPlugin
 class ZonePatch : EClass {
     static void Prefix(Zone __instance)
     {
-        Debug.LogWarning("Zone.Activate() called:");
-        Debug.LogWarning("\t" + __instance.NameWithDangerLevel);
-        Debug.LogWarning("\t" + __instance.pathExport);
+        KiriaDLCPlugin.LogWarning("Zone.Activate","called:");
+        KiriaDLCPlugin.LogWarning("Zone.Activate","\t" + __instance.NameWithDangerLevel);
+        KiriaDLCPlugin.LogWarning("Zone.Activate","\t" + __instance.pathExport);
     }
     static void Postfix(Zone __instance) {
-        Debug.LogWarning("Now entering " + __instance.source.id);
+        KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","Now entering " + __instance.source.id);
         //If they've already gotten the quest, or the quest is finished, we don't want to add it again
         //Also make sure it's the PC's zone and that it's not already in the list to avoid duplication
         //and issues with moongates.
@@ -70,11 +80,14 @@ class ZonePatch : EClass {
             //Quest must have a client, we find Kiria to be the client
             Chara c = EClass.game.cards.globalCharas.Find("adv_kiria");
             //If Kiria is recruited and has enough affinity, add the quest 
-            if (c != null && c.IsPCFaction && c.affinity.value >= 85) //Pre marriage, post recruit
+            if
+                (c != null &&
+                 (KiriaDLCPlugin.DEBUG_MODE || 
+                  (c.IsPCFaction && c.affinity.value >= 85))) //Pre marriage, post recruit
             {
                 //Putting it on the global quest list and setting the client will make the quest
                 //Appear on the quest board
-                Debug.Log("KiriaDLC:: Adding quest to global list");
+                KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","KiriaDLC:: Adding quest to global list");
                 EClass.game.quests.globalList.Add(Quest.Create("kiria_map_quest").SetClient(c, false));
             }
             
@@ -96,7 +109,7 @@ class DigPatch : TaskDig
             if (map != null)
             {
                 //We're putting the spawn logic inside the trait to make it easier to customize
-                (map.trait as TraitKiriaMap).SpawnNefia(); 
+                (map.trait as TraitKiriaMap)?.SpawnNefia(); 
                 //We're done with this map
                 map.Destroy();
                 EClass.player.willAutoSave = true;
@@ -111,7 +124,7 @@ class DigPatch : TaskDig
     {
         foreach (Thing nefiaMap in EClass.pc.things.List((Func<Thing, bool>) (t => t.trait is TraitKiriaMap)))
         {
-            if (__instance.pos.Equals((object) (nefiaMap.trait as TraitKiriaMap).GetDest(true)))
+            if (__instance.pos.Equals((object) (nefiaMap.trait as TraitKiriaMap)?.GetDest(true)))
                 return nefiaMap;
         }
         return (Thing) null;

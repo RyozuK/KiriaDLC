@@ -1,3 +1,11 @@
-Research notes 69,Strange Engineer 「Ryozu」,0
-{center}
-It's clear now, her body won't last very long.  She can now create soulless clones of herself, and I've made a way to move her mind from one body to another, but she risks losing memories each time.  The transfer is incomplete.  I've disabled the transfer to avoid more memory corruption.  I need to find a way <the letter is torn in half here>
+研究メモ 69,奇妙な技師「リョウズ」,0  
+{center}  
+今ではっきりした。彼女の体は長く持たないだろう。  
+彼女は自分の魂のないクローンを作り出せるようになったが、  
+私は彼女の精神を別の体に移す方法を作ったものの、  
+移行するたびに記憶を失うリスクがある。  
+移行は不完全だ。これ以上の記憶損失を防ぐために、  
+私は移行機能を無効にした。  
+別の方法を見つけなければならない  
+---------  
+<この手紙はここで破られている>

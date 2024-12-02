@@ -1,5 +1,6 @@
-Research notes 34,Strange Engineer 「Ryozu」,0
-{center}
-It's becoming more and more clear that although The mechanical body can now move on it's own and reacts to what I say, she is still just a doll, an automaton.
+研究メモ 34,奇妙な技師「リョウズ」,0  
+{center}  
+機械の体は自力で動き、私の言葉に反応するようになったが、  
+彼女はまだただの人形、自動機械にすぎないことがますます明らかになってきた。  
 
-Oh great Mani of Machine, I beg of you, give life to my creation!
+ああ、偉大なる機械神マニよ、どうか私の創造物に命を与えてください！

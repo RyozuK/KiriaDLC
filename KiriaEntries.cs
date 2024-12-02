@@ -38,7 +38,7 @@ public class KiriaEntries
         CorpseID = EClass.sources.objs.rows.Max(row => row.id) + 1;
         corpse.id = CorpseID;
         corpse.name = "remains of Strange Engineer 「Ryozu」";
-        corpse.name_JP = "Strange Engineer 「Ryozu」"; //TODO: translate
+        corpse.name_JP = "奇妙な技師「Ryozu」の遺骸"; //TODO: translate/verify
         corpse.chance = 0;
         corpse.defMat = "bone";
         corpse.components = ["gene_kiria"];
@@ -69,7 +69,7 @@ public class KiriaEntries
         kiria_bunny.id = "kiria_bunny";
         kiria_bunny._idRenderData = "@chara";
         kiria_bunny.name = "Bunny Bomb Kiria";
-        kiria_bunny.name_JP = "...";
+        kiria_bunny.name_JP = "バニーボムキリア";
         kiria_bunny.race = "machine";
         kiria_bunny.idText = "";
         kiria_bunny.tag = ["noPortrait"];
@@ -86,7 +86,7 @@ public class KiriaEntries
         kiria_broken.id = "kiria_broken";
         kiria_broken._idRenderData = "@chara";
         kiria_broken.name = "Damaged Kiria";
-        kiria_broken.name_JP = "...";
+        kiria_broken.name_JP = "損傷したキリア";
         kiria_broken.race = "machine";
         kiria_broken.idText = "";
         kiria_broken.tag = ["noPortrait"];
@@ -102,7 +102,7 @@ public class KiriaEntries
         kiria_headless.id = "kiria_headless";
         kiria_headless._idRenderData = "@chara";
         kiria_headless.name = "Damaged Kiria";
-        kiria_headless.name_JP = "...";
+        kiria_headless.name_JP = "損傷したキリア";
         kiria_headless.race = "machine";
         kiria_headless.idText = "";
         kiria_headless.tag = ["noPortrait"];
@@ -118,7 +118,7 @@ public class KiriaEntries
         kiria_putit.id = "kiria_putit";
         kiria_putit._idRenderData = "@chara";
         kiria_putit.name = "Putit Kiria";
-        kiria_putit.name_JP = "...";
+        kiria_putit.name_JP = "プティット・キリア";
         kiria_putit.race = "machine";
         kiria_putit.idText = "";
         kiria_putit.tag = ["noPortrait"];
@@ -141,11 +141,11 @@ public class KiriaEntries
         var zone_kiria_lab = CreateCopy(zoneNymelleCrystal);
         zone_kiria_lab.id = "kiria_lab";
         zone_kiria_lab.name = "Fanatic's Laboratory";
-        zone_kiria_lab.name_JP = "..."; //TODO
+        zone_kiria_lab.name_JP = "狂信者の実験室"; //TODO
         zone_kiria_lab.type = "Mod_KiriaDLC.Zone_KiriaDungeon";
         zone_kiria_lab.LV = 1;
         zone_kiria_lab.textFlavor = "This area has a foreboding aura.";
-        zone_kiria_lab.textFlavor_JP = "..."; //TODO
+        zone_kiria_lab.textFlavor_JP = "この地域には不吉な雰囲気が漂っている。"; //TODO
         
         return zone_kiria_lab;
     }
@@ -155,19 +155,19 @@ public class KiriaEntries
         var zone_kiria_dungeon = CreateCopy(zoneNymelle);
         zone_kiria_dungeon.id = "kiria_dungeon";
         zone_kiria_dungeon.name = "Strange factory";
-        zone_kiria_dungeon.name_JP = "..."; //TODO
+        zone_kiria_dungeon.name_JP = "奇妙な工場"; //TODO
         zone_kiria_dungeon.type = "Mod_KiriaDLC.Zone_KiriaDungeon";
-        zone_kiria_dungeon.LV = 35;
+        zone_kiria_dungeon.LV = 27;
         zone_kiria_dungeon.idProfile = "DungeonFactory";
         zone_kiria_dungeon.idBiome = "Dungeon_Factory";
         zone_kiria_dungeon.textFlavor = "A strange factory full of broken machinery";
-        zone_kiria_dungeon.textFlavor_JP = "..."; //TODO
+        zone_kiria_dungeon.textFlavor_JP = "壊れた機械でいっぱいの奇妙な工場"; //TODO
         return zone_kiria_dungeon;
     }
 
     private static void AddThings(SourceManager sources)
     {
-        Debug.Log("KIRIADLC::AddThings:: Adding manual entry");
+        KiriaDLCPlugin.LogWarning("AddThings","Adding manual entry");
         //Using Kuronekotei's example, we find an existing item to duplicate
         SourceThing.Row treasure_map = sources.things.rows.Find(x => x.id == "map_treasure");
         sources.things.rows.Add(MakeKiriaMap(treasure_map));
@@ -195,7 +195,7 @@ public class KiriaEntries
         var book_tool = CreateCopy(toolBuild);
         book_tool.id = "kiriaTool";
         book_tool.name = "Kiria Item Tool";
-        book_tool.name_JP = "Kiria Item Tool";
+        book_tool.name_JP = "キリアアイテムツール";
         book_tool.trait = ["KiriaItemTool"];
         return book_tool;
     }
@@ -209,6 +209,7 @@ public class KiriaEntries
         map_kiria.name = "Kiria's map";
         map_kiria.naming = "";
         map_kiria.unknown = "Oddly drawn map";
+        map_kiria.unknown_JP = "奇妙に描かれた地図";
         map_kiria.tiles = [1713];
         map_kiria.defMat = "paper";
         map_kiria.LV = 36;
@@ -232,7 +233,7 @@ public class KiriaEntries
         var quest = sources.quests.CreateRow();
         //ClassCache.assemblies.Add("Mod_KiriaDLC");
         quest.id = "kiria_map_quest";
-        quest.name = "Investigation request";
+        quest.name = "調査依頼";
         quest.name_JP = "..."; //TODO
         //If you have a quest lcass, specify it here, you can use a mod namespace, see
         //QuestKiria.cs
@@ -240,9 +241,21 @@ public class KiriaEntries
         //The message on the quest board.
         //For multistep quests, each step's description is separated by pipes.
         quest.detail =
-            "#pc, can you look into something for me?|You've recieved a map from Kiria, find out where it points.";
+            "#pc, can you look into something for me?" +
+            "|You've recieved a map from Kiria, find out what is there." +
+            "|An army of Kiria?! Defend yourself... " +
+            "|You've survived, maybe the stairs will unlock?" +
+            "|You've found a strange lab, look for clues. " +
+            "|The remains is clutching a capsule with something in it?";
         quest.detail_JP =
-            "#pc, ..."; //TODO
+                "#pc、ちょっと調べてほしいことがあるの。" +
+                "|キリアから地図を受け取った。そこに何があるか確かめて。" +
+                "|キリアの軍勢？！自分を守れ..." +
+                "|生き残った…もしかして階段が開くのか？" +
+                "|奇妙な研究所を見つけた。手がかりを探そう。" +
+                "|遺骸がカプセルを握りしめている…中に何か入っているの？";
+
+        
         quest.drama = ["kiriaDLC", "main"];
         sources.quests.rows.Add(quest);
     }

@@ -1,3 +1,6 @@
-Research notes 136,Strange Engineer 「Ryozu」,0
-{center}
-Kiria seems to have wandered off.  I hope she remembers how to get home. In the meantime, I've sent out her incomplete bodies to track her down.  They can at least follow simple directives.
+研究メモ 136,奇妙な技師「リョウズ」,0  
+{center}  
+キリアがどこかへ行ってしまったようだ。  
+彼女が帰り道を覚えていることを願う。  
+その間に、不完全な彼女の体を使って捜索を開始した。  
+それらは少なくとも簡単な指示に従うことができる。

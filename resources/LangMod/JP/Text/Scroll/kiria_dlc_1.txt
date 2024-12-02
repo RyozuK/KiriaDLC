@@ -1,3 +1,4 @@
-Research notes 15,Strange Engineer 「Ryozu」,0
-{center}
-I've finally done it, I've built the perfect girl.  Tomorrow, I will activate her.
+研究メモ 15,奇妙な技師「リョウズ」,0  
+{center}  
+ついに完成した。私は完璧な少女を作り上げた。  
+明日、彼女を起動する。

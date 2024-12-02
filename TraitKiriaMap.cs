@@ -1,12 +1,5 @@
 ﻿
-﻿using HarmonyLib;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using Mod_KiriaDLC;
 using UnityEngine;
 public class TraitKiriaMap : TraitScrollMapTreasure
 {
@@ -63,18 +56,16 @@ public class TraitKiriaMap : TraitScrollMapTreasure
     //This spawns the nefia, it's called by the Prefix patch for digging
     public void SpawnNefia()
     {
-        Debug.Log("KiriaDLC:: Here is where I would spawn my Nefia");
         //We create the site this way because the CreateSite with given position is private
         //Radius 1 basically means within 1 tile of the PC's current location
         Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon");
         if (site != null)
         {
-
-            
-            
             site.isKnown = true;
             Msg.Say("discoverZone", site.NameWithDangerLevel);
-            Debug.Log("Map created " + site.NameWithDangerLevel);
+            KiriaDLCPlugin.LogWarning("TraitKiriaMap.SpawnNefia","Map created " + site.NameWithDangerLevel);
+            //I wanted to close the no-longer-valid map but this doesn't seem to do it.
+            EClass.ui.layerFloat.GetLayer<LayerTreasureMap>()?.CloseLayers();
         }
         else
         {
