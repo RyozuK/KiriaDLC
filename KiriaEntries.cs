@@ -233,8 +233,8 @@ public class KiriaEntries
         var quest = sources.quests.CreateRow();
         //ClassCache.assemblies.Add("Mod_KiriaDLC");
         quest.id = "kiria_map_quest";
-        quest.name = "調査依頼";
-        quest.name_JP = "..."; //TODO
+        quest.name = "Investigation Request";
+        quest.name_JP = "調査依頼"; //TODO
         //If you have a quest lcass, specify it here, you can use a mod namespace, see
         //QuestKiria.cs
         quest.type = "Mod_KiriaDLC.QuestKiria";
