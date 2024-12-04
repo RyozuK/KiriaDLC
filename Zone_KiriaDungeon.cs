@@ -13,14 +13,16 @@ public class Zone_KiriaDungeon : Zone_Dungeon
     public static int LvBoss => LvBasement + 1;
     public List<Chara> bosses;
     public bool BossesDead => bosses?.All(boss => boss.isDead) ?? false;
- 
+
+    public override bool RestrictBuild => true; //Don't let the PC build here.
+    // public override bool AlwaysLowblock => false;
+    public override bool IsReturnLocation => false;
+
     public new Chara Boss
     {
         get => bosses != null && !BossesDead ? bosses.First(chara => !chara.isDead) : bosses?.TryGet(0);
         set => bosses.Add(value);
     }
-
-    public override bool IsReturnLocation => false;
     
     public override string IDPlayList
     {
@@ -54,6 +56,8 @@ public class Zone_KiriaDungeon : Zone_Dungeon
     public override bool UseFog => this.lv != LvBasement;
 
     public override bool RevealRoom => this.lv == LvBasement;
+    
+    public override bool HasLaw => this.lv == LvBasement;
 
     public override float PrespawnRate => this.lv == LvBasement ? 0.0f : base.PrespawnRate;
 
@@ -62,7 +66,7 @@ public class Zone_KiriaDungeon : Zone_Dungeon
         return level == LvBasement ? "kiria_lab" : this.source.id;
     }
     
-    public override bool ScaleMonsterLevel => true;
+    // public override bool ScaleMonsterLevel => true;
     
     //Note: This is called before OnEnterZone
     public override void OnBeforeSimulate()

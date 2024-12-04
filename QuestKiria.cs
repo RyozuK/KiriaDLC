@@ -26,7 +26,7 @@ public class QuestKiria : QuestDialog
     //(Or do we?)
     public override string idSource => this.id; // + (this.phase == 0 ? "" : this.phase.ToString() ?? "");
 
-    //We want the player to have picked up all the letters except the last to progress the quest
+    //We want the player to have picked up all the letters to progress the quest
     public HashSet<string> letters = 
     [
         "kiria_dlc_1", "kiria_dlc_2", "kiria_dlc_3",

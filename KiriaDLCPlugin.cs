@@ -64,6 +64,7 @@ class ZonePatch : EClass {
         KiriaDLCPlugin.LogWarning("Zone.Activate","called:");
         KiriaDLCPlugin.LogWarning("Zone.Activate","\t" + __instance.NameWithDangerLevel);
         KiriaDLCPlugin.LogWarning("Zone.Activate","\t" + __instance.pathExport);
+        KiriaDLCPlugin.LogWarning("Zone.Activate", "\t" + __instance.mainFaction.id);
     }
     static void Postfix(Zone __instance) {
         KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","Now entering " + __instance.source.id);
@@ -164,20 +165,24 @@ class DigPatch : TaskDig
 //
 // //No really, who's talking?
 //
-// [HarmonyPatch(typeof(LayerDrama))]
-// [HarmonyPatch(nameof(LayerDrama.Activate))]
-// class LayerDramaPatch : LayerDrama
-// {
-//     static void Prefix(string book, string idSheet, string idStep,
-//         Chara target = null, Card ref1 = null, string tag = "")
-//     {
-//         Debug.LogWarning("LayerDrama::Activate: Book    : " + book);
-//         Debug.LogWarning("LayerDrama::Activate: idSheet : " + idSheet);
-//         Debug.LogWarning("LayerDrama::Activate: idStep  : " + idStep);
-//         Debug.LogWarning("LayerDrama::Activate: target  : " + target);
-//         
-//     }
-// }
+[HarmonyPatch(typeof(LayerDrama))]
+[HarmonyPatch(nameof(LayerDrama.Activate))]
+class LayerDramaPatch : LayerDrama
+{
+    static void Prefix(string book, string idSheet, string idStep,
+        Chara target = null, Card ref1 = null, string tag = "")
+    {
+        Debug.LogWarning("LayerDrama::Activate: Book    : " + book);
+        Debug.LogWarning("LayerDrama::Activate: idSheet : " + idSheet);
+        Debug.LogWarning("LayerDrama::Activate: idStep  : " + idStep);
+        Debug.LogWarning("LayerDrama::Activate: target  : " + target);
+        if (target != null)
+        {
+            KiriaDLCPlugin.LogWarning("LayerDrama::Activate", "Target ID is " + target.id);
+        }
+        
+    }
+}
 //
 // [HarmonyPatch(typeof(DramaManager))]
 // [HarmonyPatch(nameof(DramaManager.ParseLine))]
