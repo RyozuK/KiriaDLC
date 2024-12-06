@@ -8,9 +8,9 @@ public class TraitKiriaGene : TraitGene
     {
         KiriaDLCPlugin.LogWarning("TraitKiriaGene.OnCreate","invoked");
         DNA dna = new DNA();
-        dna.id = "android";
+        dna.id = "android_kiria";
         dna.type = DNA.Type.Superior;
-        dna.cost = 27;
+        dna.cost = KiriaDLCPlugin.DEBUG_MODE ? 0 : 27;
         dna.lv = 35;
         dna.seed = 1;
         dna.vals = [1410, 1, 1652, 1];
@@ -19,5 +19,4 @@ public class TraitKiriaGene : TraitGene
         this.owner.c_DNA = dna;
         owner.ChangeMaterial(dna.GetMaterialId(dna.type));
     }
-    
 }

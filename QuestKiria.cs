@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Transactions;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,8 +15,20 @@ public class QuestKiria : QuestDialog
     public static int PHASE_BOSS_DEAD => 3;
     public static int PHASE_LETTERS => 4;
     public static int PHASE_REMAINS => 5;
-        
-    public override bool RequireClientInSameZone => false;
+
+    // private bool[] phase_dialog = [false, false, false, true, false, false, false];
+    //
+    // public override void OnChangePhase(int a)
+    // {
+    //     //Called AFTER the phase is changed,
+    //     if (phase_dialog[a])
+    //     {
+    //         phase_dialog[a] = false;
+    //         this.person.chara.ShowDialog("kiriaDLC", "phase_start_" + a);
+    //     }
+    // }
+
+    public override bool RequireClientInSameZone => true;
     
     
     //QuestDialog -> QuestProgression -> QuestSequence, wherein idSource will append the progress
@@ -115,14 +125,12 @@ public class QuestKiria : QuestDialog
         EClass.pc.Pick(mapItem);
         this.NextPhase();
     }
-    
 
-    // public override void OnComplete()
-    // {
-    //     base.OnComplete();
-    //     //Should I change CharaText for Kiria?
-    //     Chara c = EClass.game.cards.globalCharas.Find("adv_kiria");
-    // }
+
+    public override void OnBeforeComplete()
+    {
+        this.person.chara.ShowDialog("kiriaDLC", "complete_quest");
+    }
 
     //Called whenever the PC enters a zone, Of note: This is called after a Zone OnBeforeSimulate
     public override void OnEnterZone()

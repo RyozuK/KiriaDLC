@@ -1,9 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <!-- Edit this!-->
     <ModName>Mod_KiriaDLC</ModName>
 
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <AssemblyName>$(ModName)</AssemblyName>
     <Description>My first plugin</Description>
     <Version>1.0.0</Version>

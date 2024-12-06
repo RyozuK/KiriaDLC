@@ -14,7 +14,7 @@ public class Zone_KiriaDungeon : Zone_Dungeon
     public List<Chara> bosses;
     public bool BossesDead => bosses?.All(boss => boss.isDead) ?? false;
 
-    public override bool RestrictBuild => true; //Don't let the PC build here.
+    public override bool RestrictBuild => this.lv == LvBasement; //Don't let the PC build here.
     // public override bool AlwaysLowblock => false;
     public override bool IsReturnLocation => false;
 

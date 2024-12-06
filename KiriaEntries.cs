@@ -22,6 +22,17 @@ public class KiriaEntries
         AddZones(sources);
         AddQuest(sources);
         AddKirias(sources);
+        AddCharaText(sources);
+    }
+
+    private static void AddCharaText(SourceManager sources)
+    {
+        SourceCharaText.Row ctxt = CreateCopy(sources.charaText.rows.Find(c => c.id == "adv_kiria"));
+        ctxt.id = "adv_kiria2";
+        ctxt.calm_JP = "「いつか私の製造者の魂を見つけて、殴ってやるの。」\n「人形愛好者には、まだまだ懲らしめが必要ね…。」\n「結局、私はスクラップじゃなかった。」";
+        ctxt.calm =
+            "\"Someday, I will find my creator's spirit, and punch him.\"\n\"Doll lovers still need some punishment...\"\n\"I wasn't scrap afterall.\"";
+        sources.charaText.rows.Add(ctxt);
     }
 
     private static void AddObjs(SourceManager sources)
@@ -38,7 +49,7 @@ public class KiriaEntries
         CorpseID = EClass.sources.objs.rows.Max(row => row.id) + 1;
         corpse.id = CorpseID;
         corpse.name = "remains of Strange Engineer 「Ryozu」";
-        corpse.name_JP = "奇妙な技師「Ryozu」の遺骸"; //TODO: translate/verify
+        corpse.name_JP = "奇妙な技師「Ryozu」の遺骸";
         corpse.chance = 0;
         corpse.defMat = "bone";
         corpse.components = ["gene_kiria"];
@@ -141,11 +152,11 @@ public class KiriaEntries
         var zone_kiria_lab = CreateCopy(zoneNymelleCrystal);
         zone_kiria_lab.id = "kiria_lab";
         zone_kiria_lab.name = "Fanatic's Laboratory";
-        zone_kiria_lab.name_JP = "狂信者の実験室"; //TODO
+        zone_kiria_lab.name_JP = "狂信者の実験室";
         zone_kiria_lab.type = "Mod_KiriaDLC.Zone_KiriaDungeon";
         zone_kiria_lab.LV = 1;
         zone_kiria_lab.textFlavor = "This area has a foreboding aura.";
-        zone_kiria_lab.textFlavor_JP = "この地域には不吉な雰囲気が漂っている。"; //TODO
+        zone_kiria_lab.textFlavor_JP = "この地域には不吉な雰囲気が漂っている。";
         
         return zone_kiria_lab;
     }
@@ -155,13 +166,13 @@ public class KiriaEntries
         var zone_kiria_dungeon = CreateCopy(zoneNymelle);
         zone_kiria_dungeon.id = "kiria_dungeon";
         zone_kiria_dungeon.name = "Strange factory";
-        zone_kiria_dungeon.name_JP = "奇妙な工場"; //TODO
+        zone_kiria_dungeon.name_JP = "奇妙な工場"; 
         zone_kiria_dungeon.type = "Mod_KiriaDLC.Zone_KiriaDungeon";
         zone_kiria_dungeon.LV = 27;
         zone_kiria_dungeon.idProfile = "DungeonFactory";
         zone_kiria_dungeon.idBiome = "Dungeon_Factory";
         zone_kiria_dungeon.textFlavor = "A strange factory full of broken machinery";
-        zone_kiria_dungeon.textFlavor_JP = "壊れた機械でいっぱいの奇妙な工場"; //TODO
+        zone_kiria_dungeon.textFlavor_JP = "壊れた機械でいっぱいの奇妙な工場";
         return zone_kiria_dungeon;
     }
 

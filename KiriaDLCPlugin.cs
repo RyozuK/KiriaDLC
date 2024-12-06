@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using BepInEx;
 using HarmonyLib;
 using UnityEngine;
@@ -12,14 +13,22 @@ namespace Mod_KiriaDLC;
 [BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.0.0.0")]
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
-    public static readonly bool DEBUG_MODE = false;
+    public static readonly bool DEBUG_MODE = true;
     public static readonly int NUM_FLOORS = DEBUG_MODE ? 3 : 6;
+    
     
     public static void LogWarning(String loc, String msg)
     {
         if (DEBUG_MODE)
         {
             Debug.LogWarning("KiriaDLC::"+loc+":: " + msg);
+        }
+    }
+    public static void printFields<T>(T baseItem) where T : new() {
+        System.Reflection.FieldInfo[] fields = baseItem.GetType().GetFields();
+        String baseText = baseItem.ToString();
+        foreach (System.Reflection.FieldInfo fieldInfo in fields) {
+            KiriaDLCPlugin.LogWarning(baseText, fieldInfo.Name + " : " + baseItem.GetField<object>(fieldInfo.Name));
         }
     }
     private void Start()
@@ -35,37 +44,75 @@ public class KiriaDLCPlugin : BaseUnityPlugin
     }
 }
 
-// TODO
-// Add the books/notes
-// Make the map
-// Translate it all
-// Add consequences? (IE give choice to implant gene into Kiria or have her get upset)
-// Make the last floor locked/Boss guarded like Void?
 
+[HarmonyPatch(typeof(Chara))]
+[HarmonyPatch(nameof(Chara.GetTopicText))]
+class CharaTextPatch : Chara
+{
+    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        
+        return new CodeMatcher(instructions).MatchEndForward(
+            new CodeMatch(OpCodes.Stloc_0)).InsertAndAdvance(
+            new CodeInstruction(OpCodes.Ldloc_0),
+            new CodeInstruction(OpCodes.Ldarg_0),
+            Transpilers.EmitDelegate(CheckDna),
+            new CodeInstruction(OpCodes.Stloc_0)
+        ).InstructionEnumeration();
+    }
 
+    private static string CheckDna(string key, Chara target)
+    {
+        if (key == "adv_kiria" && target.c_genes?.items.Find(gene => gene.id == "android_kiria") != null)
+        {
+            return "adv_kiria2";
+        }
 
-// [HarmonyPatch(typeof(Game))]
-// [HarmonyPatch(nameof(Game.StartNewGame))]
-// class StartPatch : EClass
-// {
-//     static void Postfix(Game __instance)
-//     {
-//         CharaGen.Create("adv_kiria").SetGlobal(EClass.game.StartZone, EClass.game.Prologue.posFiama.x,
-//             EClass.game.Prologue.posAsh.y);
-//     }
-// }
+        return key;
+    }
+    // static void Postfix(ref string __result, Chara __instance)
+    // {
+    //     if (__instance.c_genes?.items.Find(gene => gene.id == "android_kiria") != null
+    //         && __instance.id == "adv_kiria")
+    //     {
+    //         KiriaDLCPlugin.LogWarning("Chara.GetTopicText", "Called on Kiria with Dna");
+    //         __result = "This is a test of the Kiria broadcast system";
+    //
+    //     }
+    //
+    // }
+}
+
+[HarmonyPatch(typeof(DNA))]
+[HarmonyPatch(nameof(DNA.Apply), [typeof(Chara), typeof(bool)])]
+class DNAApplyPatch : DNA
+{
+    static void Postfix(DNA __instance, Chara c, bool reverse)
+    {
+        if (__instance.id == "android_kiria")
+        {
+            Chara kiria = EClass.game.cards.globalCharas.Find("adv_kiria");
+            if (c == kiria)
+            {
+                kiria.ShowDialog("kiriaDLC", "used_gene_kiria");
+                kiria.affinity.Mod(50);
+            }
+            else
+            {
+                kiria.ShowDialog("kiriaDLC", "used_gene_other");
+                
+                kiria.SetAIAggro();
+            }
+            
+        }
+    }
+}
 
 
 [HarmonyPatch(typeof(Zone))]
 [HarmonyPatch(nameof(Zone.Activate))]
 class ZonePatch : EClass {
-    static void Prefix(Zone __instance)
-    {
-        KiriaDLCPlugin.LogWarning("Zone.Activate","called:");
-        KiriaDLCPlugin.LogWarning("Zone.Activate","\t" + __instance.NameWithDangerLevel);
-        KiriaDLCPlugin.LogWarning("Zone.Activate","\t" + __instance.pathExport);
-        KiriaDLCPlugin.LogWarning("Zone.Activate", "\t" + __instance.mainFaction.id);
-    }
+
     static void Postfix(Zone __instance) {
         KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","Now entering " + __instance.source.id);
         //If they've already gotten the quest, or the quest is finished, we don't want to add it again
@@ -79,6 +126,7 @@ class ZonePatch : EClass {
             )
         {
             //Quest must have a client, we find Kiria to be the client
+            //In theory, this will be the base Kiria
             Chara c = EClass.game.cards.globalCharas.Find("adv_kiria");
             //If Kiria is recruited and has enough affinity, add the quest 
             if
@@ -120,6 +168,7 @@ class DigPatch : TaskDig
         }
         return true;
     }
+    
     //Helper to find specifically our map, an edit of TaskDig's GetTreasureMap
     public static Thing GetNefiaMap(TaskDig __instance)
     {
@@ -132,99 +181,35 @@ class DigPatch : TaskDig
     }
 }
 
-/* ******************************
- * The following is all purely for testing/debugging.  leaving it in for posterity
- ********************************/
-
-
-// [HarmonyPatch(typeof(TraitBook))]
-// [HarmonyPatch(nameof(TraitBook.OnRead))]
-// class BookReadPatch : TraitBook
+//
+// [HarmonyPatch(typeof(LayerDrama))]
+// [HarmonyPatch(nameof(LayerDrama.Activate))]
+// class LayerDramaPatch : LayerDrama
 // {
-//     static void Prefix(TraitBook __instance)
+//     static void Prefix(string book, string idSheet, string idStep,
+//         Chara target = null, Card ref1 = null, string tag = "")
 //     {
-//         BookList.Item item = __instance.Item;
-//         Debug.LogWarning("KiriaDLC::TaitBook::OnRead");
-//         Debug.LogWarning("\t" + (__instance.IsParchment ? "LayerParchment" : "LayerBook"));
-//         Debug.LogWarning("\t" + (__instance.IsParchment ? "Scroll/" : "Book/") + item.id);
-//     }
-// }
-//
-// //This dig into the quest system here
-//
-// [HarmonyPatch(typeof(Quest))]
-// [HarmonyPatch(nameof(Quest.OnClickQuest))]
-// class QuestPatch : Quest
-// {
-//     public static void Prefix(Quest __instance)
-//     {
-//         Debug.LogWarning("QUEST::Information::Quest.id is [" + __instance.id + "]");
-//         Debug.LogWarning("QUEST::Information::Quest.drama is [" + String.Join(", ", __instance.source.drama) + "]");
-//     }
-// }
-//
-// //No really, who's talking?
-//
-[HarmonyPatch(typeof(LayerDrama))]
-[HarmonyPatch(nameof(LayerDrama.Activate))]
-class LayerDramaPatch : LayerDrama
-{
-    static void Prefix(string book, string idSheet, string idStep,
-        Chara target = null, Card ref1 = null, string tag = "")
-    {
-        Debug.LogWarning("LayerDrama::Activate: Book    : " + book);
-        Debug.LogWarning("LayerDrama::Activate: idSheet : " + idSheet);
-        Debug.LogWarning("LayerDrama::Activate: idStep  : " + idStep);
-        Debug.LogWarning("LayerDrama::Activate: target  : " + target);
-        if (target != null)
-        {
-            KiriaDLCPlugin.LogWarning("LayerDrama::Activate", "Target ID is " + target.id);
-        }
-        
-    }
-}
-//
-// [HarmonyPatch(typeof(DramaManager))]
-// [HarmonyPatch(nameof(DramaManager.ParseLine))]
-// class DramaManagerPatch : DramaManager
-// {
-//     static void Prefix(Dictionary<string, string> item)
-//     {
-//         bool notEmpty = false;
-//         string output = "ParseLIne: ";
-//         foreach (var i in item)
+//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": Book    : " + book);
+//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": idSheet : " + idSheet);
+//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": idStep  : " + idStep);
+//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": target  : " + target);
+//         if (target != null)
 //         {
-//             if (!i.Value.Equals(""))
+//             KiriaDLCPlugin.LogWarning("LayerDrama::Activate", "Target ID is " + target.id);
+//             KiriaDLCPlugin.LogWarning("LayerDrama::Activate", "Target UID is " + target.uid);
+//             if (target.c_genes != null)
 //             {
-//                 notEmpty = true;
-//                 output += "\n\t\tKey: " + i.Key + " | Value: " + i.Value;
+//                 foreach (var item in target.c_genes.items)
+//                 {
+//                     KiriaDLCPlugin.LogWarning(item.ToString(), "-----------------");
+//                     KiriaDLCPlugin.LogWarning(item.id, "-----------------");
+//                     KiriaDLCPlugin.printFields(item);
+//                 }
 //             }
 //         }
-//
-//         if (notEmpty)
-//         {
-//             Debug.LogWarning(output);
-//         }
+//         
 //     }
-// }
+//     
 //
-// [HarmonyPatch(typeof(Map))]
-// [HarmonyPatch(nameof(Map.TryLoadFile))]
-// class MapTryPatch : Map
-// {
-//     static void Prefix(string path, string s, int size)
-//     {
-//         Debug.LogWarning("MapPatch::TryLoadFile called with: path/s/size=[" + path + "][" + s + "][" + size + "]");
-//     }
 // }
-//
-// [HarmonyPatch(typeof(Map))]
-// [HarmonyPatch(nameof(Map.Load))]
-// class MapLoadPatch : Map
-// {
-//     static void Prefix(string path, bool import = false, PartialMap partial = null)
-//     {
-//         Debug.LogWarning("MapPatch::Load called with: path/import/partial=[" + path + "][" + import + "][" + partial + "]");
-//     }
-// }
-//
+
