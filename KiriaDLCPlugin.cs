@@ -48,26 +48,32 @@ public class KiriaDLCPlugin : BaseUnityPlugin
 [HarmonyPatch(typeof(Chara))]
 [HarmonyPatch(nameof(Chara.GetTopicText))]
 class CharaTextPatch : Chara
-{
+{   //We want to change Kiria's "CharaText" if the player uses the gene on her.  Since CharaText isn't an instance
+    //variable, we'll have to interject in the GetTopicText
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
-        
+        //Add this: key = CheckDna(key, this);
+        //right after the first line that says "key ="
         return new CodeMatcher(instructions).MatchEndForward(
-            new CodeMatch(OpCodes.Stloc_0)).InsertAndAdvance(
-            new CodeInstruction(OpCodes.Ldloc_0),
-            new CodeInstruction(OpCodes.Ldarg_0),
-            Transpilers.EmitDelegate(CheckDna),
-            new CodeInstruction(OpCodes.Stloc_0)
+            new CodeMatch(OpCodes.Stloc_0)).Advance(1) //FInd the first "key =" and move past it
+            .InsertAndAdvance(  //Insert the following function call
+                new CodeInstruction(OpCodes.Ldloc_0), //key is the first argument
+                new CodeInstruction(OpCodes.Ldarg_0), //'this' is the second argument
+                Transpilers.EmitDelegate(CheckDna),          //Insert invocation of the delegate
+                new CodeInstruction(OpCodes.Stloc_0)  //Store the resulting stack into key
         ).InstructionEnumeration();
     }
 
     private static string CheckDna(string key, Chara target)
     {
+        KiriaDLCPlugin.LogWarning("CheckDNA", "Called with key: " + key);
+        KiriaDLCPlugin.LogWarning("CheckDNA", "Called chara id: " + target?.id);
+        KiriaDLCPlugin.LogWarning("CheckDNA", "Called with uid: " + target?.uid);
         if (key == "adv_kiria" && target.c_genes?.items.Find(gene => gene.id == "android_kiria") != null)
         {
-            return "adv_kiria2";
+            key = "adv_kiria2";
         }
-
+        KiriaDLCPlugin.LogWarning("CheckDNA", "returning key: " + key);
         return key;
     }
     // static void Postfix(ref string __result, Chara __instance)
