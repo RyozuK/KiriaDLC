@@ -13,13 +13,14 @@ namespace Mod_KiriaDLC;
 [BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.0.0.0")]
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
-    public static readonly bool DEBUG_MODE = true;
+    public static readonly bool DEBUG_MODE = false;
+    public static readonly bool DEBUG_OVERRIDE = false;
     public static readonly int NUM_FLOORS = DEBUG_MODE ? 3 : 6;
     
     
     public static void LogWarning(String loc, String msg)
     {
-        if (DEBUG_MODE)
+        if (DEBUG_MODE || DEBUG_OVERRIDE)
         {
             Debug.LogWarning("KiriaDLC::"+loc+":: " + msg);
         }
@@ -107,9 +108,12 @@ class DNAApplyPatch : DNA
             {
                 kiria.ShowDialog("kiriaDLC", "used_gene_other");
                 
-                kiria.SetAIAggro();
+                //pc.DoHostileAction(kiria);
+                kiria.hostility = Hostility.Enemy;
+                kiria.DoHostileAction((Card) EMono.pc, true);
+                kiria.enemy = pc;
+                kiria.calmCheckTurn = 255;
             }
-            
         }
     }
 }

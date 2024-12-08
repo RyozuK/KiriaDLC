@@ -55,15 +55,30 @@ public class QuestKiria : QuestDialog
 
     private void UpdateLetterCollections()
     {
-        List<Thing> things = EClass.pc.things.FindAll(thing => thing.id == "letter" && letters.Contains(thing.GetStr(53)));
-        foreach (Thing thing in things)
+        //Turns out this only works on the main inventory, and if the letters are picked up
+        //into the sub inventory/bag, it won't detect.
+        foreach (string letter in letters)
         {
-            found.Add(thing.GetStr(53));
+            if (EClass.pc.things.Find(thing => thing.id == "letter" && thing.GetStr(53) == letter) != null)
+            {
+                found.Add(letter);
+            }
         }
+        // List<Thing> things = EClass.pc.things.FindAll(thing => thing.id == "letter" && letters.Contains(thing.GetStr(53)));
+        // foreach (Thing thing in things)
+        // {
+        //     found.Add(thing.GetStr(53));
+        // }
+    }
+
+    public override void OnGiveItem(Chara c, Thing t)
+    {
+        KiriaDLCPlugin.LogWarning("QuestKiria::OnGiveItem", c.id + " " + t.id);
     }
     
-    private bool PlayerHasGene => EClass.pc.things.Any(thing => thing.id == "gene_kiria");
-    
+    // private bool PlayerHasGene => EClass.pc.things.Any(thing => thing.id == "gene_kiria"); //Does not detect item in bag
+    // private bool PlayerHasGene => EClass.pc.things.Find("gene_kiria") != null; //Detects items in bags
+    private bool PlayerHasGene => EClass.pc.things.Find(gene => gene.id == "gene_kiria") != null; //Detects items in bags
     //Put the phases in the quest text so we use this to split it and choose the right one
     //I suppose if we did a row per quest in the source, each row would include a step.
     public override string GetDetail(bool onJournal = false)
@@ -89,6 +104,7 @@ public class QuestKiria : QuestDialog
                 if (this.MobKilLCount >= 7)
                 {
                     EClass._zone.SetBGM(114);
+                    this.person.chara.ShowDialog("kiriaDLC", "after_battle");
                     NextPhase();
                 }
             }

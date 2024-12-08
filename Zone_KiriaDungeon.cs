@@ -13,7 +13,7 @@ public class Zone_KiriaDungeon : Zone_Dungeon
     public static int LvBoss => LvBasement + 1;
     public List<Chara> bosses;
     public bool BossesDead => bosses?.All(boss => boss.isDead) ?? false;
-
+    public override bool ScaleMonsterLevel => !KiriaDLCPlugin.DEBUG_MODE;
     public override bool RestrictBuild => this.lv == LvBasement; //Don't let the PC build here.
     // public override bool AlwaysLowblock => false;
     public override bool IsReturnLocation => false;

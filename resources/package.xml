@@ -1,13 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Meta>
-    <title>Kiria DLC</title>
+    <title>"Kiria's Memory" / 「キリアの記憶」 Quest DLC</title>
     <id>kiria_dlc</id>
     <author>Ryozu</author>
     <loadPriority>100</loadPriority>
     <description>
         Are you friends with Kiria? She'd like your help with something.
+        A quest exploring Kiria's history, featuring unique mechanics, a challenging battle, and exclusive rewards.
 
         君は、キリアと友達ですか？彼女はあなたの手伝いを希望しています。
+        キリアの歴史を探るクエスト。ユニークなメカニクス、挑戦的なバトル、そして限定の報酬が待っています。
+
+        日本のプレイヤーの皆様へ: このModの日本語版の多くはAIを使用して翻訳されています。改善が必要だと感じる箇所がありましたら、ぜひ作者までご連絡ください。ご意見をお待ちしております！
+        
+        Special thanks to 
+            TP(kuronekotei)
+            FreshCloth(dk)
+            aoxola
+
+        https://github.com/RyozuK/KiriaDLC
     </description>
+    <tags>General,Story</tags>
     <version>0.23.25</version>
+    <builtin>false</builtin>
+    <visibility>Unlisted</visibility>
 </Meta>
