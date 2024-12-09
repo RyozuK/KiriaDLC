@@ -14,7 +14,7 @@ namespace Mod_KiriaDLC;
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
     public static readonly bool DEBUG_MODE = false;
-    public static readonly bool DEBUG_OVERRIDE = true;
+    public static readonly bool DEBUG_OVERRIDE = false;
     public static readonly int NUM_FLOORS = DEBUG_MODE ? 3 : 6;
     
     

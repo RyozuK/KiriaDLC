@@ -5,6 +5,7 @@ using HarmonyLib;
 using UnityEngine;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Mod_KiriaDLC;
 
@@ -17,12 +18,27 @@ public class KiriaEntries
     public static void OnStartCore()
     {
         var sources = Core.Instance.sources;
+        string LoaderGuid = "dk.elinplugins.customdialogloader";
+        
+        var loader = BaseModManager.Instance.packages
+            .FirstOrDefault(p => p.activated && p.id == LoaderGuid);
+        if (loader is not null) {
+            // use loader
+            KiriaDLCPlugin.LogWarning("KiriaEntries::OnStartCore", "Using Custom Whatever Loader");
+            return;
+        }
+    
+        // load manually
+        KiriaDLCPlugin.LogWarning("KiriaEntries::OnStartCore", "MANUAL Loading");
         AddThings(sources);
         AddObjs(sources);
         AddZones(sources);
         AddQuest(sources);
         AddKirias(sources);
         AddCharaText(sources);
+        
+        //Technically, I should just throw an error message and reject loading since the mod'd dialog/quest
+        //Just won't work without the loader, but I'm laving it here anyway.
     }
 
     private static void AddCharaText(SourceManager sources)
@@ -33,6 +49,8 @@ public class KiriaEntries
         ctxt.calm =
             "\"Someday, I will find my creator's spirit, and punch him.\"\n\"Doll lovers still need some punishment...\"\n\"I wasn't scrap afterall.\"";
         sources.charaText.rows.Add(ctxt);
+        
+        // sources.charaText.Reset();
     }
 
     private static void AddObjs(SourceManager sources)
@@ -40,6 +58,8 @@ public class KiriaEntries
         SourceObj.Row remains = sources.objs.rows.Find(x => x.id == 82);
         //SourceThing.Row remains = sources.things.rows.Find(x => x.id == "870");
         sources.objs.rows.Add(MakeRemains(remains));
+        
+        // sources.objs.Reset();
     }
     
     
@@ -70,6 +90,8 @@ public class KiriaEntries
 
         SourceChara.Row hot_guy = sources.charas.rows.Find(x => x.id == "hardgay");
         sources.charas.rows.Add(MakeKiriaBunny(hot_guy));
+        
+        sources.charas.Reset();
 
     }
 
@@ -144,7 +166,8 @@ public class KiriaEntries
         sources.zones.rows.Add(MakeKiriaZoneDungeon(zone_nymelle));
         SourceZone.Row zone_nymelle_crystal = sources.zones.rows.Find(x => x.id == "nymelle_crystal");
         sources.zones.rows.Add(MakeKiriaZoneLab(zone_nymelle_crystal));
-
+        
+        // sources.zones.Reset();
     }
 
     private static SourceZone.Row MakeKiriaZoneLab(SourceZone.Row zoneNymelleCrystal)
@@ -188,6 +211,8 @@ public class KiriaEntries
 
         SourceThing.Row gene = sources.things.rows.Find(row => row.id == "gene");
         sources.things.rows.Add(MakePrizeGene(gene));
+        
+        sources.things.Reset();
 
     }
 
@@ -269,6 +294,8 @@ public class KiriaEntries
         
         quest.drama = ["kiriaDLC", "main"];
         sources.quests.rows.Add(quest);
+        
+        // sources.quests.Reset();
     }
     
     //Utility, credit to kuronekotei https://github.com/kuronekotei/ElinMOD/

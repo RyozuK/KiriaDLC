@@ -8,6 +8,7 @@ public class TraitKiriaItemTool : TraitItem
     {
         Thing note = ThingGen.Create("letter");
         note.SetStr(53, note_id);
+        // note.material = sources.materials.rows.Find(mat => mat.id == 0);
         EClass.pc.Pick(note);
     }
     

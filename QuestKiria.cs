@@ -28,6 +28,8 @@ public class QuestKiria : QuestDialog
     //     }
     // }
 
+    public static Thing MapItem;
+
     public override bool RequireClientInSameZone => true;
     
     
@@ -136,9 +138,9 @@ public class QuestKiria : QuestDialog
     public override void OnStart()
     {
         KiriaDLCPlugin.LogWarning("Quest.OnStart","KiriaDLC:: OnStart called, spawning map. Phase: " + this.phase);
-        Thing mapItem = ThingGen.Create("map_kiria");
+        MapItem = ThingGen.Create("map_kiria");
         Msg.Say("get_quest_item");
-        EClass.pc.Pick(mapItem);
+        EClass.pc.Pick(MapItem);
         this.NextPhase();
     }
 
