@@ -16,6 +16,8 @@ public class QuestKiria : QuestDialog
     public static int PHASE_LETTERS => 4;
     public static int PHASE_REMAINS => 5;
 
+    // public override bool CanAbandon => true;
+
     //Map related
     [JsonProperty]
     private Thing _mapItem;

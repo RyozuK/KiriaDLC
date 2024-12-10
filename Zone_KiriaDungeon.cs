@@ -20,10 +20,9 @@ public class Zone_KiriaDungeon : Zone_Dungeon
     public override bool RestrictBuild => this.lv == LvBasement; //Don't let the PC build here.
     // public override bool AlwaysLowblock => false;
     public override bool IsReturnLocation => false;
-
     
     public override string IDPlayList =>
-        this.lv == LvBoss && EClass.game.quests.GetPhase<QuestKiria>() == QuestKiria.PHASE_BOSS
+        this.lv == LvBoss && EClass.game.quests.GetPhase<QuestKiria>() <= QuestKiria.PHASE_BOSS
             ? "Dungeon_Boss"
             : base.IDPlayList;
 
