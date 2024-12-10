@@ -3,13 +3,18 @@
     <title>"Kiria's Memory" / 「キリアの記憶」 Quest DLC</title>
     <id>kiria_dlc</id>
     <author>Ryozu</author>
-    <loadPriority>100</loadPriority>
+    <loadPriority>69</loadPriority>
     <description>
         Are you friends with Kiria? She'd like your help with something.
         A quest exploring Kiria's history, featuring unique mechanics, a challenging battle, and exclusive rewards.
 
         君は、キリアと友達ですか？彼女はあなたの手伝いを希望しています。
         キリアの歴史を探るクエスト。ユニークなメカニクス、挑戦的なバトル、そして限定の報酬が待っています。
+
+        机利亚的回忆，任务DLC
+
+        你是那位机械人形机利亚的朋友吗？她或许需要你的帮助。
+        通过一个全新的任务探索机利亚的过去，体验新奇的机制，刺激的战斗，以及独特的奖励。
 
         日本のプレイヤーの皆様へ: このModの日本語版の多くはAIを使用して翻訳されています。改善が必要だと感じる箇所がありましたら、ぜひ作者までご連絡ください。ご意見をお待ちしております！
         
