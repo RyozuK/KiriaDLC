@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Meta>
-    <title>"Kiria's Memory" / 「キリアの記憶」 Quest DLC</title>
+    <title>"Kiria's Memory" / 「キリアの記憶」 Quest DLC [EN/CN/JP/TW]</title>
     <id>kiria_dlc</id>
     <author>Ryozu</author>
     <loadPriority>69</loadPriority>
@@ -16,7 +16,7 @@
         你是那位机械人形机利亚的朋友吗？她或许需要你的帮助。
         通过一个全新的任务探索机利亚的过去，体验新奇的机制，刺激的战斗，以及独特的奖励。
 
-        日本のプレイヤーの皆様へ: このModの日本語版の多くはAIを使用して翻訳されています。改善が必要だと感じる箇所がありましたら、ぜひ作者までご連絡ください。ご意見をお待ちしております！
+        日本のプレイヤーの皆さんへ: このMODの日本語版の一部はAIを使って翻訳されています。改善が必要な部分があると思われる場合は、作者までご連絡ください。皆様のフィードバックをお待ちしております!
         
         Special thanks to 
             TP(kuronekotei) (Code Examples https://github.com/kuronekotei/ElinMOD)
@@ -30,8 +30,8 @@
         警告：建议在接受任务前进行保存备份。一旦接受，删除模组可能会导致保存文件出现问题。
         
     </description>
-    <tags>General,Story</tags>
-    <version>0.23.25</version>
+    <tags>General,Story,Quest</tags>
+    <version>0.23.46</version>
     <builtin>false</builtin>
     <visibility>Unlisted</visibility>
 </Meta>
