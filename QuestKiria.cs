@@ -16,21 +16,27 @@ public class QuestKiria : QuestDialog
     public static int PHASE_LETTERS => 4;
     public static int PHASE_REMAINS => 5;
 
-    // private bool[] phase_dialog = [false, false, false, true, false, false, false];
-    //
-    // public override void OnChangePhase(int a)
-    // {
-    //     //Called AFTER the phase is changed,
-    //     if (phase_dialog[a])
-    //     {
-    //         phase_dialog[a] = false;
-    //         this.person.chara.ShowDialog("kiriaDLC", "phase_start_" + a);
-    //     }
-    // }
 
-    public static Thing MapItem;
+    private Thing _mapItem = null;
 
-    public override bool RequireClientInSameZone => true;
+    public Thing MapItem
+    {
+        get
+        {
+            if (_mapItem == null || _mapItem.isDestroyed)
+            {
+                KiriaZone?.Destroy();
+                _mapItem = ThingGen.Create("map_kiria");
+            }
+            return _mapItem;
+        }
+        set => _mapItem = value;
+    }
+
+    public Zone KiriaZone { get; set; } = null;
+
+
+    public override bool RequireClientInSameZone => !KiriaDLCPlugin.DEBUG_MODE;
     
     
     //QuestDialog -> QuestProgression -> QuestSequence, wherein idSource will append the progress
@@ -66,17 +72,8 @@ public class QuestKiria : QuestDialog
                 found.Add(letter);
             }
         }
-        // List<Thing> things = EClass.pc.things.FindAll(thing => thing.id == "letter" && letters.Contains(thing.GetStr(53)));
-        // foreach (Thing thing in things)
-        // {
-        //     found.Add(thing.GetStr(53));
-        // }
     }
-
-    public override void OnGiveItem(Chara c, Thing t)
-    {
-        KiriaDLCPlugin.LogWarning("QuestKiria::OnGiveItem", c.id + " " + t.id);
-    }
+    
     
     // private bool PlayerHasGene => EClass.pc.things.Any(thing => thing.id == "gene_kiria"); //Does not detect item in bag
     // private bool PlayerHasGene => EClass.pc.things.Find("gene_kiria") != null; //Detects items in bags
@@ -138,16 +135,26 @@ public class QuestKiria : QuestDialog
     public override void OnStart()
     {
         KiriaDLCPlugin.LogWarning("Quest.OnStart","KiriaDLC:: OnStart called, spawning map. Phase: " + this.phase);
-        MapItem = ThingGen.Create("map_kiria");
+        // MapItem = ThingGen.Create("map_kiria");
         Msg.Say("get_quest_item");
-        EClass.pc.Pick(MapItem);
         this.NextPhase();
+        EClass.pc.Pick(MapItem);
+        //Give the player the map replacement quest.
+        EClass.game.quests.globalList.Add(Quest.Create("kiria_map_replace").SetClient(this.person.chara, false));
     }
-
+    
 
     public override void OnBeforeComplete()
     {
         this.person.chara.ShowDialog("kiriaDLC", "complete_quest");
+        Quest mapReplaceQuest = EClass.game.quests.GetGlobal("kiria_map_replace");
+        MapItem?.Destroy();
+        KiriaDLCPlugin.LogWarning("QuestKiria::OnBeforeComplete", "Found quest " + mapReplaceQuest?.id);
+        if (mapReplaceQuest is not null)
+        {
+            KiriaDLCPlugin.LogWarning("QuestKiria::OnBeforeComplete", "Removing it");
+            EClass.game.quests.RemoveGlobal(mapReplaceQuest);
+        }
     }
 
     //Called whenever the PC enters a zone, Of note: This is called after a Zone OnBeforeSimulate

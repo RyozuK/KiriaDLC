@@ -13,7 +13,7 @@ namespace Mod_KiriaDLC;
 [BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.0.0.0")]
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
-    public static readonly bool DEBUG_MODE = false;
+    public static readonly bool DEBUG_MODE = true;
     public static readonly bool DEBUG_OVERRIDE = false;
     public static readonly int NUM_FLOORS = DEBUG_MODE ? 3 : 6;
     
@@ -67,9 +67,6 @@ class CharaTextPatch : Chara
 
     private static string CheckDna(string key, Chara target)
     {
-        KiriaDLCPlugin.LogWarning("CheckDNA", "Called with key: " + key);
-        KiriaDLCPlugin.LogWarning("CheckDNA", "Called chara id: " + target?.id);
-        KiriaDLCPlugin.LogWarning("CheckDNA", "Called with uid: " + target?.uid);
         if (key == "adv_kiria" && target.c_genes?.items.Find(gene => gene.id == "android_kiria") != null)
         {
             key = "adv_kiria2";
@@ -77,17 +74,6 @@ class CharaTextPatch : Chara
         KiriaDLCPlugin.LogWarning("CheckDNA", "returning key: " + key);
         return key;
     }
-    // static void Postfix(ref string __result, Chara __instance)
-    // {
-    //     if (__instance.c_genes?.items.Find(gene => gene.id == "android_kiria") != null
-    //         && __instance.id == "adv_kiria")
-    //     {
-    //         KiriaDLCPlugin.LogWarning("Chara.GetTopicText", "Called on Kiria with Dna");
-    //         __result = "This is a test of the Kiria broadcast system";
-    //
-    //     }
-    //
-    // }
 }
 
 [HarmonyPatch(typeof(DNA))]
@@ -168,9 +154,15 @@ class DigPatch : TaskDig
             if (map != null)
             {
                 //We're putting the spawn logic inside the trait to make it easier to customize
-                (map.trait as TraitKiriaMap)?.SpawnNefia(); 
                 //We're done with this map
+                QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
+                if (quest is not null)
+                {
+                    quest.MapItem = null;
+                    quest.KiriaZone = (map.trait as TraitKiriaMap)?.SpawnNefia(); 
+                }
                 map.Destroy();
+                
                 EClass.player.willAutoSave = true;
                 //We'll change this to false in case this doesn't avoid digging up treasure too
                 return true;

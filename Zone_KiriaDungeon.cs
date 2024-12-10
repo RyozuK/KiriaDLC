@@ -28,7 +28,7 @@ public class Zone_KiriaDungeon : Zone_Dungeon
     {
         get
         {
-            if (this.lv == LvBoss && (bosses == null || !BossesDead))
+            if (this.lv == LvBoss && (bosses == null || !BossesDead) && EClass.game.quests.GetPhase<QuestKiria>() <= QuestKiria.PHASE_BOSS)
             {
                     KiriaDLCPlugin.LogWarning("ZoneKiriaDungeon.IDPlayList","\t\tPlaying Boss Music");
                     return "Dungeon_Boss";
@@ -66,7 +66,6 @@ public class Zone_KiriaDungeon : Zone_Dungeon
         return level == LvBasement ? "kiria_lab" : this.source.id;
     }
     
-    // public override bool ScaleMonsterLevel => true;
     
     //Note: This is called before OnEnterZone
     public override void OnBeforeSimulate()
@@ -75,7 +74,7 @@ public class Zone_KiriaDungeon : Zone_Dungeon
         if (this.lv == LvBoss && this.bosses == null && EClass.game.quests.GetPhase<QuestKiria>() == QuestKiria.PHASE_BOSS - 1)
         {
             KiriaDLCPlugin.LogWarning("ZoneKiriaDungeon::OnBeforeSimulate", "Summong Kirias?");
-            this._dangerLv = 100;
+            // this._dangerLv = 100;
             KiriaDLCPlugin.LogWarning("ZoneKiria.OnBeforeSimulate","\tAdding Kirias to map");
             Thing exit = EClass._map.props.installed.Find<TraitStairsLocked>();
             if (exit == null)

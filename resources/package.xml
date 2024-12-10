@@ -14,11 +14,16 @@
         日本のプレイヤーの皆様へ: このModの日本語版の多くはAIを使用して翻訳されています。改善が必要だと感じる箇所がありましたら、ぜひ作者までご連絡ください。ご意見をお待ちしております！
         
         Special thanks to 
-            TP(kuronekotei)
-            FreshCloth(dk)
-            aoxola
+            TP(kuronekotei) (Code Examples https://github.com/kuronekotei/ElinMOD)
+            FreshCloth(dk) (CN Translation, code help)
+            aoxola (some JP Translation and advice)
 
         https://github.com/RyozuK/KiriaDLC
+        
+        Warning: A save Backup is suggested before accepting the quest.  Once accepted, removing the mod may cause save file issues.
+        警告: クエストを受け入れる前にバックアップを保存することをお勧めします。 受け入れた後に mod を削除すると、保存ファイルの問題が発生する可能性があります。
+        警告：建议在接受任务前进行保存备份。一旦接受，删除模组可能会导致保存文件出现问题。
+        
     </description>
     <tags>General,Story</tags>
     <version>0.23.25</version>

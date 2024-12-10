@@ -54,7 +54,7 @@ public class TraitKiriaMap : TraitScrollMapTreasure
     }
 
     //This spawns the nefia, it's called by the Prefix patch for digging
-    public void SpawnNefia()
+    public Zone SpawnNefia()
     {
         //We create the site this way because the CreateSite with given position is private
         //Radius 1 basically means within 1 tile of the PC's current location
@@ -65,11 +65,14 @@ public class TraitKiriaMap : TraitScrollMapTreasure
             Msg.Say("discoverZone", site.NameWithDangerLevel);
             KiriaDLCPlugin.LogWarning("TraitKiriaMap.SpawnNefia","Map created " + site.NameWithDangerLevel);
             //I wanted to close the no-longer-valid map but this doesn't seem to do it.
-            EClass.ui.layerFloat.GetLayer<LayerTreasureMap>()?.CloseLayers();
+            // EClass.ui.layerFloat.GetLayer<LayerTreasureMap>()?.CloseLayers();
+            return site;
         }
         else
         {
             Debug.LogError("Failed to create nefia");
         }
+
+        return null;
     }
 }
