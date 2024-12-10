@@ -56,6 +56,12 @@ public class TraitKiriaMap : TraitScrollMapTreasure
     //This spawns the nefia, it's called by the Prefix patch for digging
     public Zone SpawnNefia()
     {
+        QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
+        if (quest is null || quest.isComplete)
+        {
+            KiriaDLCPlugin.LogWarning("TraitMapKiria::SpawnNefia", "Quest wasn't found, or quest is already complete");
+            return null;
+        }
         //We create the site this way because the CreateSite with given position is private
         //Radius 1 basically means within 1 tile of the PC's current location
         Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon");

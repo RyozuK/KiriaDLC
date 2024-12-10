@@ -71,7 +71,7 @@ class CharaTextPatch : Chara
         {
             key = "adv_kiria2";
         }
-        KiriaDLCPlugin.LogWarning("CheckDNA", "returning key: " + key);
+        // KiriaDLCPlugin.LogWarning("CheckDNA", "returning key: " + key);
         return key;
     }
 }
@@ -140,6 +140,34 @@ class ZonePatch : EClass {
     }
 }
 
+[HarmonyPatch(typeof(Chara))]
+[HarmonyPatch(nameof(Chara.Pick))]
+class PickupPatch : Chara
+{
+    static void Postfix(Chara __instance, Thing t)
+    {
+        KiriaDLCPlugin.LogWarning("Chara", "Pick: " + t.id + " with uid of " + t.uid);
+        //At least for this mod, we only care about the gene and letters
+        if (t.id != "letter" && t.id != "gene_kiria")
+        {
+            return;
+        }
+
+        //Only the player or their pawns matter for picking up items here
+        if (__instance.IsPC || __instance.IsPCFaction)
+        {
+            QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
+            //If they even have the quest
+            if (quest is null)
+            {
+                return;
+            }
+            //Let the quest know the player picked up the item.
+            quest.OnItemPickup(t);
+        }
+    }
+}
+
 [HarmonyPatch(typeof(TaskDig))]
 [HarmonyPatch(nameof(TaskDig.OnProgressComplete))]
 class DigPatch : TaskDig
@@ -156,13 +184,18 @@ class DigPatch : TaskDig
                 //We're putting the spawn logic inside the trait to make it easier to customize
                 //We're done with this map
                 QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
-                if (quest is not null)
+                if (quest is not null && !quest.isComplete)
                 {
                     quest.MapItem = null;
                     quest.KiriaZone = (map.trait as TraitKiriaMap)?.SpawnNefia(); 
                 }
-                map.Destroy();
-                
+
+                while (map != null)
+                {
+                    map.Destroy();
+                    map = GetNefiaMap(__instance);
+                }
+
                 EClass.player.willAutoSave = true;
                 //We'll change this to false in case this doesn't avoid digging up treasure too
                 return true;

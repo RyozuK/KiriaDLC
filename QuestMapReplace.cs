@@ -7,6 +7,8 @@ public class QuestMapReplace : QuestDialog
     // We don't want OnStart here actually
      public override void OnClickQuest()
      {
+         
+         QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
          //First, check if they have the map, if so, dialog that they don't need it
          if (EClass.pc.things.Find(thing => thing.id == "map_kiria") != null)
          {
@@ -16,10 +18,12 @@ public class QuestMapReplace : QuestDialog
          else
          {
              // Quest main = EClass.game.quests.GetGlobal("kiria_map_quest");
-             Quest main = EClass.game.quests.Get<QuestKiria>();
-             KiriaDLCPlugin.LogWarning("MapReplace", "Found quest: |" + main?.id + "|");
-             this.person.chara.ShowDialog("kiriaDLC", "give_new_map");
-             EClass.pc.Pick((main as QuestKiria).MapItem);
+             KiriaDLCPlugin.LogWarning("MapReplace", "Found quest: |" + quest?.id + "|");
+             if (quest is not null)
+             {
+                 this.person.chara.ShowDialog("kiriaDLC", "give_new_map");
+                 EClass.pc.Pick(quest.MapItem);
+             }
          }
      }
 }
