@@ -54,6 +54,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(ManagedPath)/Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Reflex">
+      <HintPath>..\..\..\Steam\steamapps\common\Elin\Elin_Data\Managed\Reflex.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">

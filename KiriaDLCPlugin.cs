@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx;
 using HarmonyLib;
+using ReflexCLI;
 using UnityEngine;
+
 
 namespace Mod_KiriaDLC;
 
@@ -17,6 +20,11 @@ public class KiriaDLCPlugin : BaseUnityPlugin
     public static readonly bool DEBUG_OVERRIDE = false;
     public static readonly int NUM_FLOORS = DEBUG_MODE ? 3 : 6;
     
+    private void Awake()
+    {
+        Assembly executingAssembly = Assembly.GetExecutingAssembly();
+        CommandRegistry.assemblies.Add(executingAssembly);
+    }
     
     public static void LogWarning(String loc, String msg)
     {
@@ -42,7 +50,9 @@ public class KiriaDLCPlugin : BaseUnityPlugin
         // Console.WriteLine("KIRIADLC::OnStartCore() invoked");
         // string folder = Info.Location;
         KiriaEntries.OnStartCore();
+        
     }
+
 }
 
 
