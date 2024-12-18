@@ -14,6 +14,7 @@ public class TraitKiriaGene : TraitGene
         dna.lv = 35;
         dna.seed = 1;
         dna.vals = [1410, 1, 1652, 1];
+        dna.slot = 0;
         dna.CalcCost();
         //dna.vals = this.owner.elements.list;
         this.owner.c_DNA = dna;
