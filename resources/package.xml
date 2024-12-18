@@ -33,5 +33,5 @@
     <tags>General,Story,Quest</tags>
     <version>0.23.46</version>
     <builtin>false</builtin>
-    <visibility>Unlisted</visibility>
+    <visibility>Public</visibility>
 </Meta>
