@@ -45,6 +45,9 @@
       <HintPath>$(BepInExPath)/core/0Harmony.dll</HintPath>
     </Reference>
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.34" IncludeAssets="compile" />
+    <Reference Include="Plugins.Dungen">
+      <HintPath>..\..\..\Steam\steamapps\common\Elin\Elin_Data\Managed\Plugins.Dungen.dll</HintPath>
+    </Reference>
     <Reference Include="Plugins.UI">
       <HintPath>$(ManagedPath)/Plugins.UI.dll</HintPath>
     </Reference>
