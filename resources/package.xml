@@ -25,13 +25,9 @@
 
         https://github.com/RyozuK/KiriaDLC
         
-        Warning: A save Backup is suggested before accepting the quest.  Once accepted, removing the mod may cause save file issues.
-        警告: クエストを受け入れる前にバックアップを保存することをお勧めします。 受け入れた後に mod を削除すると、保存ファイルの問題が発生する可能性があります。
-        警告：建议在接受任务前进行保存备份。一旦接受，删除模组可能会导致保存文件出现问题。
-        
     </description>
     <tags>General,Story,Quest</tags>
-    <version>0.23.46</version>
+    <version>0.23.67</version>
     <builtin>false</builtin>
     <visibility>Public</visibility>
 </Meta>
