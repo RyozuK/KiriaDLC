@@ -31,6 +31,7 @@ public class KiriaConsole
     [ConsoleCommand("CleanKiria")]
     public static string CleanKiria(bool full = false)
     {
+        string extra_info = "";
         try
         {
             Quest q1 = EClass.game.quests.GetGlobal("kiria_map_replace");
@@ -42,8 +43,9 @@ public class KiriaConsole
 
             if (full)
             {
-                EClass.game.quests.completedTypes.Remove("QuestKiria");
-                EClass.game.quests.completedIDs.Remove("QuestKiria");
+                extra_info = "Removing quest completion markers as well.";
+                EClass.game.quests.completedTypes.Remove("Mod_KiriaDLC.QuestKiria");
+                EClass.game.quests.completedIDs.Remove("kiria_map_quest");
             }
         }
         catch (Exception e)
@@ -51,6 +53,6 @@ public class KiriaConsole
             return "Failed to clean up quests: " + e.ToString();
         }
 
-        return "Quests removed, immediately save and disable mod to avoid problems.";
+        return "Quests removed, immediately save and disable mod to avoid problems. " + extra_info;
     }
 }

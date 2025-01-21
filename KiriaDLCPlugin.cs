@@ -13,7 +13,7 @@ namespace Mod_KiriaDLC;
 
 
 
-[BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.1.0.1")]
+[BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.2.0.1")]
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
     public static readonly bool DEBUG_MODE = false;
@@ -133,6 +133,8 @@ class ZonePatch : EClass {
         //Also make sure it's the PC's zone and that it's not already in the list to avoid duplication
         //and issues with moongates.
         //This is a one and done quest
+        
+//
         if (!EClass.game.quests.IsCompleted("kiria_map_quest") 
             && !EClass.game.quests.IsStarted<QuestKiria>()
             && EClass._zone.IsPCFaction

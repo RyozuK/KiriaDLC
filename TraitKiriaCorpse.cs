@@ -15,20 +15,20 @@ public class TraitKiriaCorpse : TraitItem
         KiriaDLCPlugin.LogWarning("TraitCorpse","Used Corpse");
         //Deprecating old gene so that the gene won't vanish
         //Thing gene = ThingGen.Create("gene_kiria");
-
-        DNA dna = new DNA();
-        dna.id = "android_kiria";
-        dna.type = DNA.Type.Superior;
-        dna.cost = KiriaDLCPlugin.DEBUG_MODE ? 0 : 27;
-        dna.lv = 35;
-        dna.seed = 1;
-        dna.vals = [1410, 1, 1652, 1];
-        dna.slot = 0;
-        dna.CalcCost();
-
         Thing gene = ThingGen.Create("gene");
-        gene.c_DNA = dna;
-        gene.ChangeMaterial(dna.GetMaterialId(dna.type));
+
+        gene.c_DNA = new DNA
+        {
+            id = "android_kiria",
+            type = DNA.Type.Superior,
+            cost = KiriaDLCPlugin.DEBUG_MODE ? 0 : 27,
+            lv = 35,
+            seed = 1,
+            vals = [1410, 1, 1652, 1],
+            slot = 0
+        };
+        gene.c_DNA.CalcCost();
+        gene.ChangeMaterial(gene.c_DNA.GetMaterialId(gene.c_DNA.type));
 
         
         EClass._map.SetObj(this.owner.pos.x, this.owner.pos.z, 82,1,this.owner.dir);
