@@ -13,7 +13,24 @@ public class TraitKiriaCorpse : TraitItem
     {
         if (c != EClass.pc) return false;
         KiriaDLCPlugin.LogWarning("TraitCorpse","Used Corpse");
-        Thing gene = ThingGen.Create("gene_kiria");
+        //Deprecating old gene so that the gene won't vanish
+        //Thing gene = ThingGen.Create("gene_kiria");
+
+        DNA dna = new DNA();
+        dna.id = "android_kiria";
+        dna.type = DNA.Type.Superior;
+        dna.cost = KiriaDLCPlugin.DEBUG_MODE ? 0 : 27;
+        dna.lv = 35;
+        dna.seed = 1;
+        dna.vals = [1410, 1, 1652, 1];
+        dna.slot = 0;
+        dna.CalcCost();
+
+        Thing gene = ThingGen.Create("gene");
+        gene.c_DNA = dna;
+        gene.ChangeMaterial(dna.GetMaterialId(dna.type));
+
+        
         EClass._map.SetObj(this.owner.pos.x, this.owner.pos.z, 82,1,this.owner.dir);
         EClass.pc.Pick(gene);
         this.owner.Destroy();

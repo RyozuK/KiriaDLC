@@ -88,7 +88,7 @@ public class QuestKiria : QuestDialog
             }
         }
 
-        if (thing.id == "gene_kiria")
+        if (thing.id == "gene_kiria" || thing.c_DNA?.id == "android_kiria")
         {
             //We'll just complete the quest if they pick up the gene, the letters are for flavor
             //So it's up to the player to decide if that's important.

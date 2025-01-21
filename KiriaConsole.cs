@@ -3,7 +3,7 @@ using Mod_KiriaDLC;
 using ReflexCLI.Attributes;
 
 [ConsoleCommandClassCustomizer("")]
-public class KIriaConsole
+public class KiriaConsole
 {
     
     [ConsoleCommand("ResetKiria")]
@@ -11,8 +11,8 @@ public class KIriaConsole
     {
         try
         {
-            Mod_KiriaDLC.QuestKiria quest = EClass.game.quests.Get<Mod_KiriaDLC.QuestKiria>();
-            if (quest != null) quest.phase = 1;
+            Quest quest = EClass.game.quests.Get<QuestKiria>();
+            if (quest is not null) quest.phase = 1;
             Quest mapQuest = EClass.game.quests.GetGlobal("kiria_map_replace");
             if (mapQuest is null)
             {
@@ -29,16 +29,21 @@ public class KIriaConsole
     }
 
     [ConsoleCommand("CleanKiria")]
-    public static string CleanKiria()
+    public static string CleanKiria(bool full = false)
     {
         try
         {
-            EClass.game.quests.globalList.Remove(EClass.game.quests.GetGlobal("kiria_map_replace"));
-            EClass.game.quests.globalList.Remove(EClass.game.quests.GetGlobal("kiria_map_quest"));
-            Quest q = EClass.game.quests.Get<QuestKiria>();
-            if (q is not null)
+            Quest q1 = EClass.game.quests.GetGlobal("kiria_map_replace");
+            if (q1 is not null) {EClass.game.quests.globalList.Remove(q1);}
+            Quest q2 = EClass.game.quests.GetGlobal("kiria_map_quest");
+            if (q2 is not null) {EClass.game.quests.globalList.Remove(q2);}
+            Quest q3 = EClass.game.quests.Get<QuestKiria>();
+            if (q3 is not null) { EClass.game.quests.Remove(q3); }
+
+            if (full)
             {
-                EClass.game.quests.Remove(q);
+                EClass.game.quests.completedTypes.Remove("QuestKiria");
+                EClass.game.quests.completedIDs.Remove("QuestKiria");
             }
         }
         catch (Exception e)

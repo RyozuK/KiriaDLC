@@ -24,6 +24,14 @@ public class KiriaDLCPlugin : BaseUnityPlugin
     {
         Assembly executingAssembly = Assembly.GetExecutingAssembly();
         CommandRegistry.assemblies.Add(executingAssembly);
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestKiria", "QuestDummy");
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestMapReplace", "QuestDummy");
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestTaskBosses", "QuestTask");
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestTaskLetters", "QuestTask");
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"TraitKiriaGene", "TraitGene");
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"TraitKiriaMap", "TraitMap");
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"Zone_KiriaDungeon", "Zone_Dungeon");
+        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"ZoneEventKiria", "ZoneEvent");
     }
     
     public static void LogWarning(String loc, String msg)
@@ -158,8 +166,9 @@ class PickupPatch : Chara
     {
         KiriaDLCPlugin.LogWarning("Chara", "Pick: " + t.id + " with uid of " + t.uid);
         //At least for this mod, we only care about the gene and letters
-        if (t.id != "letter" && t.id != "gene_kiria")
+        if (t.id != "letter" && t.id != "gene_kiria" && t.c_DNA?.id != "android_kiria")
         {
+            KiriaDLCPlugin.LogWarning("\t","Item was not of interest: " + t.ToString());
             return;
         }
 
@@ -170,9 +179,11 @@ class PickupPatch : Chara
             //If they even have the quest
             if (quest is null)
             {
+                KiriaDLCPlugin.LogWarning("\t","Quest was null: ");
                 return;
             }
             //Let the quest know the player picked up the item.
+            KiriaDLCPlugin.LogWarning("\t","Quest was informed: " + t.ToString());
             quest.OnItemPickup(t);
         }
     }
@@ -207,7 +218,6 @@ class DigPatch : TaskDig
                 }
 
                 EClass.player.willAutoSave = true;
-                //We'll change this to false in case this doesn't avoid digging up treasure too
                 return true;
             }
         }
@@ -225,36 +235,3 @@ class DigPatch : TaskDig
         return (Thing) null;
     }
 }
-
-//
-// [HarmonyPatch(typeof(LayerDrama))]
-// [HarmonyPatch(nameof(LayerDrama.Activate))]
-// class LayerDramaPatch : LayerDrama
-// {
-//     static void Prefix(string book, string idSheet, string idStep,
-//         Chara target = null, Card ref1 = null, string tag = "")
-//     {
-//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": Book    : " + book);
-//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": idSheet : " + idSheet);
-//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": idStep  : " + idStep);
-//         // KiriaDLCPlugin.LogWarning("LayerDrama::Activate",": target  : " + target);
-//         if (target != null)
-//         {
-//             KiriaDLCPlugin.LogWarning("LayerDrama::Activate", "Target ID is " + target.id);
-//             KiriaDLCPlugin.LogWarning("LayerDrama::Activate", "Target UID is " + target.uid);
-//             if (target.c_genes != null)
-//             {
-//                 foreach (var item in target.c_genes.items)
-//                 {
-//                     KiriaDLCPlugin.LogWarning(item.ToString(), "-----------------");
-//                     KiriaDLCPlugin.LogWarning(item.id, "-----------------");
-//                     KiriaDLCPlugin.printFields(item);
-//                 }
-//             }
-//         }
-//         
-//     }
-//     
-//
-// }
-
