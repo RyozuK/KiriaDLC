@@ -7,6 +7,7 @@ public class QuestMapReplace : QuestDialog
     // We don't want OnStart here actually
      public override void OnClickQuest()
      {
+
          
          QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
          //First, check if they have the map, if so, dialog that they don't need it

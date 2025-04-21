@@ -26,8 +26,6 @@ public class KiriaEntries
             KiriaDLCPlugin.LogWarning("KiriaEntries::OnStartCore", "Using Custom Whatever Loader");
             return;
         }
-        
         throw new Exception("Custom Whatever Loader not found! Please install or update CWL");
     }
-
 }
