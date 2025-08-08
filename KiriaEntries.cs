@@ -22,10 +22,11 @@ public class KiriaEntries
         var loader = BaseModManager.Instance.packages
             .FirstOrDefault(p => p.activated && p.id == LoaderGuid);
         if (loader is not null) {
-            // use loader
             KiriaDLCPlugin.LogWarning("KiriaEntries::OnStartCore", "Using Custom Whatever Loader");
-            return;
         }
-        throw new Exception("Custom Whatever Loader not found! Please install or update CWL");
+        else
+        {
+            KiriaDLCPlugin.LogWarning("KiriaEntries::OnStartCore", "Custom Whatever Loader not found (On Stable?) ");
+        }
     }
 }

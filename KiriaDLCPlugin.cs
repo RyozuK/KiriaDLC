@@ -13,7 +13,7 @@ namespace Mod_KiriaDLC;
 
 
 
-[BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.2.0.1")]
+[BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.2.0.3")]
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
     public static readonly bool DEBUG_MODE = false;
