@@ -1,6 +1,6 @@
 ﻿using Mod_KiriaDLC;
 
-public class TraitKiriaCorpse : TraitItem
+public class TraitRyozuCorpse : TraitItem
 {
     public override bool HoldAsDefaultInteraction => true;
 
@@ -21,7 +21,7 @@ public class TraitKiriaCorpse : TraitItem
         {
             id = "android_kiria",
             type = DNA.Type.Superior,
-            cost = KiriaDLCPlugin.DEBUG_MODE ? 0 : 27,
+            cost = 27,
             lv = 35,
             seed = 1,
             vals = [1410, 1, 1652, 1],
@@ -30,9 +30,9 @@ public class TraitKiriaCorpse : TraitItem
         gene.c_DNA.CalcCost();
         gene.ChangeMaterial(gene.c_DNA.GetMaterialId(gene.c_DNA.type));
 
-        
+        //Replace the usable corpse with a real/normal corpse
         EClass._map.SetObj(this.owner.pos.x, this.owner.pos.z, 82,1,this.owner.dir);
-        EClass.pc.Pick(gene);
+        EClass.player.DropReward(gene);
         this.owner.Destroy();
         return true;
     }

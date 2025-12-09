@@ -54,8 +54,10 @@ public class QuestKiria : QuestDialog
         }
         else if (a == PHASE_BOSS_DEAD)
         {
-            EClass._zone.SetBGM(114);
+            // EClass._zone.play
+            // EClass._zone.SetBGM(114);
             this.person.chara.ShowDialog("kiriaDLC", "after_battle");
+            EClass._zone.RefreshBGM();
         }
         else if (a == PHASE_LETTERS)
         {
@@ -69,7 +71,7 @@ public class QuestKiria : QuestDialog
         }
     }
     
-    public override bool RequireClientInSameZone => !KiriaDLCPlugin.DEBUG_MODE;
+    public override bool RequireClientInSameZone => true;
     
     //QuestDialog -> QuestProgression -> QuestSequence, wherein idSource will append the progress
     //This means there is expected to be a SourceQuest row for each step of the quest, we don't want that.
@@ -144,7 +146,7 @@ public class QuestKiria : QuestDialog
     public override void OnEnterZone()
     {
         if (this.phase == PHASE_MAP && EClass._zone.id == "kiria_dungeon" &&
-            EClass._zone.lv == Zone_KiriaDungeon.LvBoss) //Oof.
+            EClass._zone.lv == Zone_KiriaDungeon.LvBoss)
         {
             KiriaDLCPlugin.LogWarning("OnEnterZone", "Going from PhaseMap to PhaseBoss");
             NextPhase();

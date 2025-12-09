@@ -2,7 +2,7 @@
 
 namespace Mod_KiriaDLC;
 
-public class ZoneEventKIria : ZoneEvent
+public class ZoneEventKiria : ZoneEvent
 {
     public override float roundInterval => 2f;
 

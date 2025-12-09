@@ -16,58 +16,45 @@ namespace Mod_KiriaDLC;
 [BepInPlugin("net.ryozu.kiriadlc", "Kiria DLC", "1.2.0.3")]
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
-    public static readonly bool DEBUG_MODE = false;
-    public static readonly bool DEBUG_OVERRIDE = false;
-    public static readonly int NUM_FLOORS = DEBUG_MODE ? 3 : 6;
+    public static readonly int DEBUG_LEVEL = 2;
+    public static readonly int NUM_FLOORS = DEBUG_LEVEL > 1 ? 3 : 6;
+    
+    public static readonly int NEFIA_LV = 42;
+    public static readonly ZoneScaleType SCALE_TYPE = ZoneScaleType.Quest;
     
     private void Awake()
     {
         Assembly executingAssembly = Assembly.GetExecutingAssembly();
         CommandRegistry.assemblies.Add(executingAssembly);
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestKiria", "QuestDummy");
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestMapReplace", "QuestDummy");
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestTaskBosses", "QuestTask");
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"QuestTaskLetters", "QuestTask");
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"TraitKiriaGene", "TraitGene");
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"TraitKiriaMap", "TraitMap");
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"Zone_KiriaDungeon", "Zone_Dungeon");
-        // ModUtil.RegisterSerializedTypeFallback(executingAssembly.FullName,"ZoneEventKiria", "ZoneEvent");
     }
     
     public static void LogWarning(String loc, String msg)
     {
-        if (DEBUG_MODE || DEBUG_OVERRIDE)
+        if (DEBUG_LEVEL > 0)
         {
-            Debug.LogWarning("KiriaDLC::"+loc+":: " + msg);
+            Debug.LogWarning($"KiriaDLC::{loc}::{msg}");
         }
     }
-    public static void printFields<T>(T baseItem) where T : new() {
-        System.Reflection.FieldInfo[] fields = baseItem.GetType().GetFields();
-        String baseText = baseItem.ToString();
-        foreach (System.Reflection.FieldInfo fieldInfo in fields) {
-            KiriaDLCPlugin.LogWarning(baseText, fieldInfo.Name + " : " + baseItem.GetField<object>(fieldInfo.Name));
-        }
-    }
+    // public static void PrintFields<T>(T baseItem) where T : new() {
+    //     System.Reflection.FieldInfo[] fields = baseItem.GetType().GetFields();
+    //     String baseText = baseItem.ToString();
+    //     foreach (System.Reflection.FieldInfo fieldInfo in fields) {
+    //         KiriaDLCPlugin.LogWarning(baseText, fieldInfo.Name + " : " + baseItem.GetField<object>(fieldInfo.Name));
+    //     }
+    // }
     private void Start()
     {
         Debug.Log("KIRIADLC: Mod Start()");
-        var harmony = new Harmony("net.ryozu.kiriadlc");
+        Harmony harmony = new Harmony("net.ryozu.kiriadlc");
         harmony.PatchAll();
     }
-    public void OnStartCore() {
-        // Console.WriteLine("KIRIADLC::OnStartCore() invoked");
-        // string folder = Info.Location;
-        KiriaEntries.OnStartCore();
-        
-    }
-
 }
 
 
 [HarmonyPatch(typeof(Chara))]
 [HarmonyPatch(nameof(Chara.GetTopicText))]
 class CharaTextPatch : Chara
-{   //We want to change Kiria's "CharaText" if the player uses the gene on her.  Since CharaText isn't an instance
+{   //We want to change Kiria's "CharaText" if the player has used the gene on her.  Since CharaText isn't an instance
     //variable, we'll have to interject in the GetTopicText
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
@@ -85,11 +72,14 @@ class CharaTextPatch : Chara
 
     private static string CheckDna(string key, Chara target)
     {
+        // string key = this.source.idText.IsEmpty(this.id);
+        // ^^^^^^^^^^^^^^^^^
         if (key == "adv_kiria" && target.c_genes?.items.Find(gene => gene.id == "android_kiria") != null)
         {
             key = "adv_kiria2";
         }
-        // KiriaDLCPlugin.LogWarning("CheckDNA", "returning key: " + key);
+        // vvvvvvvvvvvvvvvvv
+        // if (this.id == "littleOne" && EClass._zone is Zone_LittleGarden)
         return key;
     }
 }
@@ -100,19 +90,21 @@ class DNAApplyPatch : DNA
 {
     static void Postfix(DNA __instance, Chara c, bool reverse)
     {
-        if (__instance.id == "android_kiria")
+        //If the gene is being applied, let's add some spice
+        if (__instance.id == "android_kiria" && !reverse)
         {
-            Chara kiria = EClass.game.cards.globalCharas.Find("adv_kiria");
-            if (c == kiria)
+            KiriaDLCPlugin.LogWarning("DNAPatch", "Applying 'android_kiria' gene");
+            if (c.id == "adv_kiria")
             {
-                kiria.ShowDialog("kiriaDLC", "used_gene_kiria");
-                kiria.affinity.Mod(50);
+                //This is a Kiria, she appreciates it
+                c.ShowDialog("kiriaDLC", "used_gene_kiria");
+                c.affinity.Mod(50);
             }
             else
             {
+                //Used on something beside a Kiria, she does not approve
+                Chara kiria = EClass.game.cards.globalCharas.Find("adv_kiria");
                 kiria.ShowDialog("kiriaDLC", "used_gene_other");
-                
-                //pc.DoHostileAction(kiria);
                 kiria.hostility = Hostility.Enemy;
                 kiria.DoHostileAction((Card) EMono.pc, true);
                 kiria.enemy = pc;
@@ -123,40 +115,35 @@ class DNAApplyPatch : DNA
 }
 
 
-[HarmonyPatch(typeof(Zone))]
-[HarmonyPatch(nameof(Zone.Activate))]
-class ZonePatch : EClass {
+[HarmonyPatch(typeof(DramaOutcome))]
+[HarmonyPatch(nameof(DramaOutcome.upgrade_miscreation))]
+class DramaOutcomePatch : DramaOutcome
+{
+    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        // Check if miscreation is being fixed on a Kiria, and give quest if it's not been done before
+        return new CodeMatcher(instructions).MatchEndForward(
+                new CodeMatch(OpCodes.Stloc_0)).Advance(1) //FInd the first "c1 =" and move past it
+            .InsertAndAdvance(  //Insert the following function call
+                new CodeInstruction(OpCodes.Ldloc_0), //c1 is the first argument
+                Transpilers.EmitDelegate(CheckKiria)          //Insert invocation of the delegate
+            ).InstructionEnumeration();
+    }
 
-    static void Postfix(Zone __instance) {
-        KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","Now entering " + __instance.source.id);
-        //If they've already gotten the quest, or the quest is finished, we don't want to add it again
-        //Also make sure it's the PC's zone and that it's not already in the list to avoid duplication
-        //and issues with moongates.
-        //This is a one and done quest
-        
-//
+    private static void CheckKiria(Chara c1)
+    {
+        // Chara c1 = EMono.pc.party.members.Find((Predicate<Chara>) (c => !c.IsPC && c.HasElement(1248)));
+        // ^^^^^^^^^^^^^^^
+        if (c1.id != "adv_kiria") return;
         if (!EClass.game.quests.IsCompleted("kiria_map_quest") 
-            && !EClass.game.quests.IsStarted<QuestKiria>()
-            && EClass._zone.IsPCFaction
-            && EClass.game.quests.globalList.All(x => x.id != "kiria_map_quest")
-            )
+            && !EClass.game.quests.IsStarted<QuestKiria>() 
+            && EClass.game.quests.globalList.All(x => x.id != "kiria_map_quest")) //Is there a better way to check if a quest is started/completed?
         {
-            //Quest must have a client, we find Kiria to be the client
-            //In theory, this will be the base Kiria
-            Chara c = EClass.game.cards.globalCharas.Find("adv_kiria");
-            //If Kiria is recruited and has enough affinity, add the quest 
-            if
-                (c != null &&
-                 (KiriaDLCPlugin.DEBUG_MODE || 
-                  (c.IsPCFaction && c.affinity.value >= 85))) //Pre marriage, post recruit
-            {
-                //Putting it on the global quest list and setting the client will make the quest
-                //Appear on the quest board
-                KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","KiriaDLC:: Adding quest to global list");
-                EClass.game.quests.globalList.Add(Quest.Create("kiria_map_quest").SetClient(c, false));
-            }
-            
+            EClass.game.quests.globalList.Add(Quest.Create("kiria_map_quest").SetClient(c1, false));
+            KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","KiriaDLC:: Adding quest to global list");
         }
+        // vvvvvvvvvvvvvvvv
+        // int num = c1.Evalue(1248);
     }
 }
 
@@ -164,6 +151,7 @@ class ZonePatch : EClass {
 [HarmonyPatch(nameof(Chara.Pick))]
 class PickupPatch : Chara
 {
+    //Most item quests are delivery type quests, so just picking up the item doesn't advance
     static void Postfix(Chara __instance, Thing t)
     {
         KiriaDLCPlugin.LogWarning("Chara", "Pick: " + t.id + " with uid of " + t.uid);
@@ -190,6 +178,7 @@ class PickupPatch : Chara
         }
     }
 }
+
 
 [HarmonyPatch(typeof(TaskDig))]
 [HarmonyPatch(nameof(TaskDig.OnProgressComplete))]

@@ -64,7 +64,8 @@ public class TraitKiriaMap : TraitScrollMapTreasure
         }
         //We create the site this way because the CreateSite with given position is private
         //Radius 1 basically means within 1 tile of the PC's current location
-        Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon");
+        Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon", true,KiriaDLCPlugin.NEFIA_LV);
+
         if (site != null)
         {
             site.isKnown = true;

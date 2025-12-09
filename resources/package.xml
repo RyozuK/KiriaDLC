@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Meta>
     <title>"Kiria's Memory" / 「キリアの記憶」 Quest DLC [EN/CN/JP/TW]</title>
-    <id>kiria_dlc</id>
+    <id>kiria_dlc_2</id>
     <author>Ryozu</author>
     <loadPriority>69</loadPriority>
     <description>
@@ -27,7 +27,7 @@
         
     </description>
     <tags>General,Story,Quest</tags>
-    <version>0.23.129</version>
+    <version>0.23.187</version>
     <builtin>false</builtin>
     <visibility>Public</visibility>
 </Meta>
