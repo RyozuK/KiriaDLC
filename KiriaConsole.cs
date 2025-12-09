@@ -1,10 +1,29 @@
 ﻿using System;
+using System.Linq;
 // using Mod_KiriaDLC;
 using ReflexCLI.Attributes;
 
 [ConsoleCommandClassCustomizer("")]
 public class KiriaConsole
 {
+    [ConsoleCommand("KiriaStartQuest")]
+    public static string KiriaStartQuest()
+    {
+        Chara c1 = EMono.pc.party.members.Find((Predicate<Chara>) (c => !c.IsPC && c.HasElement(1248)));
+        // ^^^^^^^^^^^^^^^
+        if (c1.id != "adv_kiria") return "Kiria not in party";
+        if (!EClass.game.quests.IsCompleted("kiria_quest") 
+            && !EClass.game.quests.IsStarted<QuestKiria>() 
+            && EClass.game.quests.globalList.All(x => x.id != "kiria_quest"))
+        {
+            EClass.game.quests.globalList.Add(Quest.Create("kiria_quest").SetClient(c1, false));
+            return "Adding quest to global list";
+        }
+        else
+        {
+            return "Quest either already finished, or in list: Try running KiriaTest first";
+        }
+    }
     [ConsoleCommand("KiriaTest")]
     public static string KiriaTest()
     {

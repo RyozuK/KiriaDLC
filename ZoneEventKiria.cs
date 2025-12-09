@@ -43,6 +43,7 @@ public class ZoneEventKiria : ZoneEvent
     
     public override void OnFirstTick()
     {
+        _bosses = new Dictionary<int, string>();
         KiriaDLCPlugin.LogWarning("ZoneEventKiria::OnFirstTick", "Fetching kirias");
         var bossUids = (zone as Zone_DungeonKiria)?.Bosses;
         if (bossUids == null) return;

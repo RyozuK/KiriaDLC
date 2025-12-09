@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Meta>
-    <title>"Kiria's Memory" / 「キリアの記憶」 Quest DLC [EN/CN/JP/TW]</title>
+    <title>Kiria's Memory</title>
     <id>kiria_dlc_2</id>
     <author>Ryozu</author>
     <loadPriority>69</loadPriority>
@@ -8,17 +8,13 @@
         Are you friends with Kiria? She'd like your help with something.
         A quest exploring Kiria's history, featuring unique mechanics, a challenging battle, and exclusive rewards.
 
-        君は、キリアと友達ですか？彼女はあなたの手伝いを希望しています。
-        キリアの歴史を探るクエスト。ユニークなメカニクス、挑戦的なバトル、そして限定の報酬が待っています。
+        To begin the quest, Take Kiria to the Eternal Garden with a memory chip and have Mani fix her up.  Once back at home, she may begin to remember something.
+        (Any Kiria will work. If you've already fixed her, you may need to use a clone.)
+        If the nefia is too difficult, consider selling Fame if you're above 5750.
 
-        机利亚的回忆，任务DLC
 
-        你是那位机械人形机利亚的朋友吗？她或许需要你的帮助。
-        通过一个全新的任务探索机利亚的过去，体验新奇的机制，刺激的战斗，以及独特的奖励。
-
-        日本のプレイヤーの皆さんへ: このMODの日本語版の一部はAIを使って翻訳されています。改善が必要な部分があると思われる場合は、作者までご連絡ください。皆様のフィードバックをお待ちしております!
-        
-        Special thanks to 
+        Special thanks to
+            noa and all of lafrontier for creating Elin and letting add Kiria into the game.
             TP(kuronekotei) (Code Examples https://github.com/kuronekotei/ElinMOD)
             FreshCloth(dk) (CN Translation, code help)
             aoxola (some JP Translation and advice)
