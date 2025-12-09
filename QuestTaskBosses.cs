@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Mod_KiriaDLC;
+// namespace Mod_KiriaDLC;
 
 public class QuestTaskBosses : QuestTask
 {
@@ -35,9 +36,9 @@ public class QuestTaskBosses : QuestTask
         return spawnList;
     }
 
-    public void OnSubdueMob(Chara mob)
+    public void OnSubdueMobId(string mobId)
     {
-        switch (mob.id)
+        switch (mobId)
         {
             case "kiria_headless" when NumHeadlessNeeded > 0:
                 NumHeadlessNeeded--;
@@ -57,7 +58,6 @@ public class QuestTaskBosses : QuestTask
     
     public override void OnGetDetail(ref string detail, bool onJournal)
     {
-        detail += "\n\n" + (7 - TotalLeft) + "/7";
+        detail += $"\n\n{7 - TotalLeft}/7";
     }
-
 }

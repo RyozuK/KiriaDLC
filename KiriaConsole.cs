@@ -1,56 +1,26 @@
 ﻿using System;
-using Mod_KiriaDLC;
+// using Mod_KiriaDLC;
 using ReflexCLI.Attributes;
 
 [ConsoleCommandClassCustomizer("")]
 public class KiriaConsole
 {
-    
-    [ConsoleCommand("ResetKiria")]
-    public static string ResetKiria()
-    {
-        try
-        {
-            Quest quest = EClass.game.quests.Get<QuestKiria>();
-            if (quest is not null) quest.phase = 1;
-            Quest mapQuest = EClass.game.quests.GetGlobal("kiria_map_replace");
-            if (mapQuest is null)
-            {
-                EClass.game.quests.globalList.Add(Quest.Create("kiria_map_replace")
-                    .SetClient(quest?.person.chara, false));
-            }
-
-            return "Reset Kiria Quest to first stage";
-        }
-        catch (Exception e)
-        {
-            return "Failed to reset, please make sure Custom Whatever Loader is updated: " + e.ToString();
-        }
-    }
-
     [ConsoleCommand("KiriaTest")]
     public static string KiriaTest()
     {
         //Step 1: Clean up the quests
-        // 1.a: Get rid of completion flags
-        // 1.b: Get rid of active quests (GlobalList)
         try
         {
-            EClass.game.quests.completedTypes.Remove("Mod_KiriaDLC.QuestKiria");
-            EClass.game.quests.completedIDs.Remove("kiria_map_quest");
+            // 1.a: Get rid of completion flags
+            EClass.game.quests.completedTypes.Remove("QuestKiria");
+            EClass.game.quests.completedIDs.Remove("kiria_quest");
+            // 1.b: Get rid of active quests (GlobalList)
             //The Map replacement quest shouldn't ever be completed, but just in case.
-            EClass.game.quests.completedTypes.Remove("Mod_KiriaDLC.QuestMapReplace");
-            EClass.game.quests.completedIDs.Remove("kiria_map_replace");
 
-            Quest q1 = EClass.game.quests.GetGlobal("kiria_map_replace");
-            if (q1 is not null)
+            Quest quest = EClass.game.quests.GetGlobal("kiria_quest");
+            if (quest is not null)
             {
-                EClass.game.quests.globalList.Remove(q1);
-            }
-            Quest q2 = EClass.game.quests.GetGlobal("kiria_map_quest");
-            if (q2 is not null)
-            {
-                EClass.game.quests.globalList.Remove(q2);
+                EClass.game.quests.globalList.Remove(quest);
             }
         }
         catch (Exception e)
@@ -64,35 +34,5 @@ public class KiriaConsole
         //Step 3: Give the player a memory chip
         EClass.pc.Pick(ThingGen.Create("memory_chip"));
         return "Test setup process completed";
-    }
-
-    [ConsoleCommand("CleanKiria")]
-    public static string CleanKiria(bool full = false)
-    {
-        //For doing a full cleanup, such as uninstalling the mod
-        //In theory, this shouldn't be needed since mod object cleanup was added
-        string extra_info = "";
-        try
-        {
-            Quest q1 = EClass.game.quests.GetGlobal("kiria_map_replace");
-            if (q1 is not null) {EClass.game.quests.globalList.Remove(q1);}
-            Quest q2 = EClass.game.quests.GetGlobal("kiria_map_quest");
-            if (q2 is not null) {EClass.game.quests.globalList.Remove(q2);}
-            Quest q3 = EClass.game.quests.Get<QuestKiria>();
-            if (q3 is not null) { EClass.game.quests.Remove(q3); }
-
-            if (full)
-            {
-                extra_info = "Removed quest completion markers as well.";
-                EClass.game.quests.completedTypes.Remove("Mod_KiriaDLC.QuestKiria");
-                EClass.game.quests.completedIDs.Remove("kiria_map_quest");
-            }
-        }
-        catch (Exception e)
-        {
-            return "Failed to clean up quests: " + e.ToString();
-        }
-
-        return "Quests removed.  If uninstalling, immediately save and disable mod to avoid problems. " + extra_info;
     }
 }

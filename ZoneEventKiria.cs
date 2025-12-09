@@ -1,51 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Mod_KiriaDLC;
+// namespace Mod_KiriaDLC;
 
 public class ZoneEventKiria : ZoneEvent
 {
     public override float roundInterval => 2f;
 
-    private List<Chara> bosses = [];
-
-    private void PrintBossInfo(string loc, Chara boss, int bossUid)
-    {
-        KiriaDLCPlugin.LogWarning(loc, boss?.id + ":" + bossUid + 
-                                                                 ":" + boss?.isDead +
-                                                                 "/" + boss?.IsPCFaction +
-                                                                 "/" + boss?.IsPCFactionMinion +
-                                                                 "/" + boss?.IsPCPartyMinion);
-    }
-
+    //Just to keep a lookup table of the ids in case a boss is missing somehow (Captured, etc.)
+    [JsonProperty] private Dictionary<int, string> _bosses;
+    
     public override void OnTickRound()
     {
         QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
         if (quest is null || quest.phase != QuestKiria.PHASE_BOSS)
         {
-            // KiriaDLCPlugin.LogWarning("ZoneEventKiria::OnTickRound", "Quest was null or not PHASE_BOSS");
             return;
         }
-        var bossUids = (zone as Zone_KiriaDungeon)?.Bosses;
-        KiriaDLCPlugin.LogWarning("-------\nZoneEventKiria::OnTickRound", "Checking " + bossUids?.Count + " uids.");
-        if (bossUids != null && bossUids.Count > 0)
+        
+        //The list of boss uids that the quest thinks need to be subdued
+        List<int> bossUids = (zone as Zone_DungeonKiria)?.Bosses;
+        
+        if (bossUids != null)
         {
-            foreach (var bossUid in bossUids.Copy())
+            foreach (var bossUid in bossUids?.Copy())
             {
+                //Find the boss in the attached zone
                 Chara boss = zone.FindChara(bossUid);
-                PrintBossInfo("ZoneEventKiria::OnTickRound", boss, bossUid);
-                if (boss == null)
+                string bossType = boss is not null ? boss.id : _bosses[bossUid];
+                if (boss == null || boss.isDead || boss.IsPCFaction || boss.IsPCFactionMinion || boss.IsPCPartyMinion)
                 {
-                    var possibleBoss = bosses.Find(chara => chara.uid == bossUid);
-                    PrintBossInfo("\t\t", possibleBoss, bossUid);
-                    //quest.OnSubdueChara(possibleBoss);
-                    OnCharaDie(possibleBoss);
-                    bosses.Remove(possibleBoss);
-                    bossUids.Remove(bossUid);
-                }
-                else if (boss.isDead || boss.IsPCFaction || boss.IsPCFactionMinion || boss.IsPCPartyMinion)
-                {
-                    quest.OnSubdueChara(boss);
-                    bosses.Remove(boss);
+                    //Boss wasn't found, must have been removed in some way, count it as subdued
+                    quest.OnSubdueChara(bossType);
                     bossUids.Remove(bossUid);
                 }
             }
@@ -56,25 +43,24 @@ public class ZoneEventKiria : ZoneEvent
     
     public override void OnFirstTick()
     {
-        KiriaDLCPlugin.LogWarning("ZoneEventKiria::OnFIrstTick", "Fetching kirias");
-        var bossUids = (zone as Zone_KiriaDungeon)?.Bosses;
-        if (bossUids != null)
-            foreach (var bossUid in bossUids)
-            {
-                bosses.Add(zone.FindChara(bossUid));
-            }
+        KiriaDLCPlugin.LogWarning("ZoneEventKiria::OnFirstTick", "Fetching kirias");
+        var bossUids = (zone as Zone_DungeonKiria)?.Bosses;
+        if (bossUids == null) return;
+        foreach (var bossUid in bossUids)
+        {
+            _bosses[bossUid] = zone.FindChara(bossUid).id;
+        }
     }
 
     public override void OnCharaDie(Chara c)
     {
         KiriaDLCPlugin.LogWarning("ZoneEventKiria::OnCharaDie", "Killed " + c?.id + "/" + c?.uid);
-        var bossUids = (zone as Zone_KiriaDungeon)?.Bosses;
+        var bossUids = (zone as Zone_DungeonKiria)?.Bosses;
         if (bossUids is null || c == null) return;
         if (bossUids.Contains(c.uid))
         {
-            EClass.game.quests.Get<QuestKiria>()?.OnSubdueChara(c);
+            EClass.game.quests.Get<QuestKiria>()?.OnSubdueChara(c.id);
             bossUids.Remove(c.uid);
-            bosses.Remove(c);
         }
         base.OnCharaDie(c);
     }

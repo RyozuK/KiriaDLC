@@ -39,7 +39,7 @@ public class QuestTaskLetters : QuestTask
     
     public override void OnGetDetail(ref string detail, bool onJournal)
     {
-        detail += "\n\n" + NumLetters + "/7";
+        detail += $"\n\n{NumLetters}/7";
     }
     
 }

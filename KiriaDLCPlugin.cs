@@ -9,7 +9,7 @@ using ReflexCLI;
 using UnityEngine;
 
 
-namespace Mod_KiriaDLC;
+// namespace Mod_KiriaDLC;
 
 
 
@@ -17,7 +17,6 @@ namespace Mod_KiriaDLC;
 public class KiriaDLCPlugin : BaseUnityPlugin
 {
     public static readonly int DEBUG_LEVEL = 2;
-    public static readonly int NUM_FLOORS = DEBUG_LEVEL > 1 ? 3 : 6;
     
     public static readonly int NEFIA_LV = 42;
     public static readonly ZoneScaleType SCALE_TYPE = ZoneScaleType.Quest;
@@ -135,11 +134,11 @@ class DramaOutcomePatch : DramaOutcome
         // Chara c1 = EMono.pc.party.members.Find((Predicate<Chara>) (c => !c.IsPC && c.HasElement(1248)));
         // ^^^^^^^^^^^^^^^
         if (c1.id != "adv_kiria") return;
-        if (!EClass.game.quests.IsCompleted("kiria_map_quest") 
+        if (!EClass.game.quests.IsCompleted("kiria_quest") 
             && !EClass.game.quests.IsStarted<QuestKiria>() 
-            && EClass.game.quests.globalList.All(x => x.id != "kiria_map_quest")) //Is there a better way to check if a quest is started/completed?
+            && EClass.game.quests.globalList.All(x => x.id != "kiria_quest"))
         {
-            EClass.game.quests.globalList.Add(Quest.Create("kiria_map_quest").SetClient(c1, false));
+            EClass.game.quests.globalList.Add(Quest.Create("kiria_quest").SetClient(c1, false));
             KiriaDLCPlugin.LogWarning("Zone.Activate Postfix","KiriaDLC:: Adding quest to global list");
         }
         // vvvvvvvvvvvvvvvv
@@ -155,8 +154,8 @@ class PickupPatch : Chara
     static void Postfix(Chara __instance, Thing t)
     {
         KiriaDLCPlugin.LogWarning("Chara", "Pick: " + t.id + " with uid of " + t.uid);
-        //At least for this mod, we only care about the gene and letters
-        if (t.id != "letter" && t.id != "gene_kiria" && t.c_DNA?.id != "android_kiria")
+        //At least for this mod, we only care about the letters
+        if (t.id != "letter")
         {
             KiriaDLCPlugin.LogWarning("\t","Item was not of interest: " + t.ToString());
             return;
@@ -198,8 +197,7 @@ class DigPatch : TaskDig
                 QuestKiria quest = EClass.game.quests.Get<QuestKiria>();
                 if (quest is not null && !quest.isComplete)
                 {
-                    quest.MapItem = null;
-                    quest.KiriaZone = (map.trait as TraitKiriaMap)?.SpawnNefia(); 
+                    (map.trait as TraitKiriaMap)?.SpawnNefia(); 
                 }
 
                 while (map != null)

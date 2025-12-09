@@ -1,5 +1,5 @@
 ﻿
-using Mod_KiriaDLC;
+// using Mod_KiriaDLC;
 using UnityEngine;
 public class TraitKiriaMap : TraitScrollMapTreasure
 {
@@ -62,9 +62,18 @@ public class TraitKiriaMap : TraitScrollMapTreasure
             KiriaDLCPlugin.LogWarning("TraitMapKiria::SpawnNefia", "Quest wasn't found, or quest is already complete");
             return null;
         }
+
+        //Let's get rid of old dungeons, only one entrance at a time
+        Zone oldSite = EClass.world.FindZone("kiria_dungeon");
+        while (oldSite is not null)
+        {
+            oldSite.Destroy();
+            oldSite = EClass.world.FindZone("kiria_dungeon");
+        }
+        
         //We create the site this way because the CreateSite with given position is private
         //Radius 1 basically means within 1 tile of the PC's current location
-        Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon", true,KiriaDLCPlugin.NEFIA_LV);
+        Zone site = EClass.world.region.CreateRandomSite(EClass._zone, 1, "kiria_dungeon", true, 42);
 
         if (site != null)
         {

@@ -6,9 +6,9 @@ using HarmonyLib;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Mod_KiriaDLC;
+// namespace Mod_KiriaDLC;
 
-public class Zone_KiriaDungeon : Zone_QuestDungeon
+public class Zone_DungeonKiria : Zone_QuestDungeon
 {
     public static int LvBasement => -6;
     
@@ -29,13 +29,6 @@ public class Zone_KiriaDungeon : Zone_QuestDungeon
             : base.IDPlayList;
 
     public override string idExport => this.lv != LvBasement ? base.idExport : "kiria_lab";
-
-
-    //When the game tries to load a map file for map generation, it'll refer to this for its location
-    //We use Assembly.GetExecutingAssembly() to point at our mod's folder
-    //Now handled by Fresh Toast Loader
-    // public override string pathExport => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-    //     $"Map/{this.idExport}.z");
     
     public override bool LockExit => this.lv == LvBoss && (EClass.game.quests.GetPhase<QuestKiria>() < QuestKiria.PHASE_BOSS_DEAD);
 
@@ -65,7 +58,7 @@ public class Zone_KiriaDungeon : Zone_QuestDungeon
             {
                 this.events.Add(new ZoneEventKiria());
                 KiriaDLCPlugin.LogWarning("ZoneKiria.OnBeforeSimulate","\tAdding Kirias to map");
-                Point point = EClass._map.FindThing<TraitStairsLocked>().owner.pos.GetNearestPoint(allowChara: false, allowInstalled: true, ignoreCenter: true, minRadius: 1) ?? EClass._map.GetCenterPos();
+                Point point = EClass._map.FindThing<TraitStairsLocked>().owner.pos.GetNearestPoint(allowChara: false, allowInstalled: true, ignoreCenter: true, minRadius: 2) ?? EClass._map.GetCenterPos();
 
                 //The quest keeps track of how many of each type of Kiria remains, we get the spawn list based on that
                 List<string> spawnList = (quest.task as QuestTaskBosses)?.GetSpawnList();
